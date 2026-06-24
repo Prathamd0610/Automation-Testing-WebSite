@@ -9,4 +9,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   testTimeout: 30000,
   clearMocks: true,
+  transform: {
+    '^.+\\.ts$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.test.json' }],
+  },
 };
