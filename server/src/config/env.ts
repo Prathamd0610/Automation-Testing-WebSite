@@ -15,7 +15,9 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().min(16, 'JWT_REFRESH_SECRET must be at least 16 characters'),
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
-  FRONTEND_URL: z.string().url().default('http://localhost:5173'),
+  // Accepts one origin or a comma-separated list (e.g. prod + localhost).
+  // Validated/normalized where CORS is configured, so we only require a string here.
+  FRONTEND_URL: z.string().min(1, 'FRONTEND_URL is required').default('http://localhost:5173'),
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'http', 'debug']).default('info'),
   MAX_UPLOAD_BYTES: z.coerce.number().int().positive().default(5 * 1024 * 1024),
 });

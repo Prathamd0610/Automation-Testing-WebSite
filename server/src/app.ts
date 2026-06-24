@@ -18,6 +18,38 @@ import { notFound, errorHandler } from './middleware/errorHandler';
 import { UPLOAD_DIR } from './middleware/upload';
 import apiRouter from './routes';
 
+/** Strip a single trailing slash so `https://x.app/` and `https://x.app` match. */
+function normalizeOrigin(value: string): string {
+  return value.trim().replace(/\/+$/, '');
+}
+
+// Allowed browser origins, parsed from FRONTEND_URL (single value or comma-separated list).
+const allowedOrigins = env.FRONTEND_URL.split(',').map(normalizeOrigin).filter(Boolean);
+
+/**
+ * CORS origin check that tolerates trailing-slash differences, supports multiple
+ * configured origins, and allows Vercel preview deployments (`*.vercel.app`).
+ * Requests without an `Origin` header (curl, health checks, server-to-server)
+ * are allowed through.
+ */
+function corsOrigin(
+  origin: string | undefined,
+  callback: (err: Error | null, allow?: boolean) => void,
+): void {
+  if (!origin) return callback(null, true);
+  const normalized = normalizeOrigin(origin);
+
+  let isVercelPreview = false;
+  try {
+    isVercelPreview = new URL(normalized).hostname.endsWith('.vercel.app');
+  } catch {
+    isVercelPreview = false;
+  }
+
+  const isAllowed = allowedOrigins.includes(normalized) || isVercelPreview;
+  return callback(null, isAllowed);
+}
+
 export function createApp(): Application {
   const app = express();
 
@@ -35,7 +67,7 @@ export function createApp(): Application {
 
   app.use(
     cors({
-      origin: env.FRONTEND_URL,
+      origin: corsOrigin,
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     }),
