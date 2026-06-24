@@ -3,6 +3,7 @@ import { Search, FlaskConical, Layers, Boxes, Workflow } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ModuleCard } from '@/components/common/ModuleCard';
+import { AdSlot } from '@/components/common/AdSlot';
 import { MODULES, MODULE_CATEGORIES, searchModules } from '@/config/modules';
 import { useDebounce } from '@/hooks/useDebounce';
 
@@ -61,6 +62,9 @@ export default function DashboardPage() {
         </div>
       </section>
 
+      {/* Ad placement — replace the slot id with your real AdSense ad unit id. */}
+      <AdSlot slot="0000000000" testId="ad-dashboard-top" />
+
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
         <Input
@@ -90,6 +94,8 @@ export default function DashboardPage() {
           </section>
         ))
       )}
+
+      <AdSlot slot="1111111111" testId="ad-dashboard-bottom" />
     </div>
   );
 }

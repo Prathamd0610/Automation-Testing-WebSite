@@ -1,0 +1,4 @@
+# Google AdSense ads.txt — authorizes Google to sell ads on this site.
+# Replace pub-XXXXXXXXXXXXXXXX with your AdSense publisher id
+# (the digits from your ca-pub-... id, without the "ca-" prefix).
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
