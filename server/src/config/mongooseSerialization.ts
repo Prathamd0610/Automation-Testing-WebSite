@@ -17,7 +17,13 @@ import mongoose, { type Schema, type ToObjectOptions } from 'mongoose';
 function applyIdSerialization(schema: Schema): void {
   const existing = (schema.get('toJSON') as ToObjectOptions | undefined) ?? {};
   const existingTransform =
-    typeof existing.transform === 'function' ? existing.transform : undefined;
+    typeof existing.transform === 'function'
+      ? (existing.transform as (
+          doc: unknown,
+          ret: Record<string, unknown>,
+          options: unknown,
+        ) => Record<string, unknown>)
+      : undefined;
 
   schema.set('toJSON', {
     versionKey: false,
