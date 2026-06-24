@@ -1,5 +1,5 @@
 import { Suspense, lazy, type ComponentType } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { Spinner } from '@/components/ui/spinner';
@@ -74,6 +74,12 @@ export function AppRouter() {
 
       <Route element={<AppLayout />}>
         <Route index element={lazyElement(DashboardPage)} />
+
+        {/* Section landing paths have no page of their own — redirect to the
+            dashboard (the module / challenge / workflow catalog) instead of 404. */}
+        <Route path="modules" element={<Navigate to="/" replace />} />
+        <Route path="challenges" element={<Navigate to="/" replace />} />
+        <Route path="workflows" element={<Navigate to="/" replace />} />
 
         <Route path="modules/inputs" element={lazyElement(InputsPage)} />
         <Route path="modules/buttons" element={lazyElement(ButtonsPage)} />

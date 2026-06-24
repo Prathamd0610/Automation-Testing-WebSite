@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -15,7 +15,8 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const results = useMemo(() => searchModules(query).slice(0, 8), [query]);
+  const results = useMemo(() => searchModules(query), [query]);
+  const listRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     if (open) {
@@ -27,6 +28,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   useEffect(() => {
     setActiveIndex(0);
   }, [query]);
+
+  // Keep the highlighted result visible while navigating with the keyboard.
+  useEffect(() => {
+    listRef.current
+      ?.querySelector<HTMLElement>('[aria-selected="true"]')
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [activeIndex]);
 
   const go = (path: string) => {
     onOpenChange(false);
@@ -49,7 +57,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="top-[20%] translate-y-0 gap-0 p-0" data-testid="command-palette">
+      <DialogContent className="top-[20%] translate-y-0 gap-0 overflow-hidden p-0 sm:max-w-xl" data-testid="command-palette">
         <DialogHeader className="sr-only">
           <DialogTitle>Search modules</DialogTitle>
         </DialogHeader>
@@ -67,7 +75,12 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
         </div>
-        <ul className="max-h-80 overflow-y-auto p-2" role="listbox" aria-label="Module results">
+        <ul
+          ref={listRef}
+          className="max-h-[60vh] overflow-y-auto p-2"
+          role="listbox"
+          aria-label="Module results"
+        >
           {results.length === 0 ? (
             <li className="px-3 py-6 text-center text-sm text-muted-foreground">No modules found.</li>
           ) : (
@@ -80,22 +93,30 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     onClick={() => go(module.path)}
                     onMouseEnter={() => setActiveIndex(index)}
                     className={cn(
-                      'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors',
+                      'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
                       index === activeIndex ? 'bg-accent text-accent-foreground' : 'text-foreground',
                     )}
                   >
                     <Icon className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-                    <span className="flex-1">
-                      <span className="font-medium">{module.title}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium">{module.title}</span>
                       <span className="block truncate text-xs text-muted-foreground">{module.description}</span>
                     </span>
-                    <span className="text-xs text-muted-foreground">{module.category}</span>
+                    <span className="shrink-0 whitespace-nowrap rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                      {module.category}
+                    </span>
                   </button>
                 </li>
               );
             })
           )}
         </ul>
+        <div className="flex items-center justify-between border-t px-4 py-2 text-[11px] text-muted-foreground">
+          <span data-testid="command-result-count">
+            {results.length} result{results.length === 1 ? '' : 's'}
+          </span>
+          <span className="hidden sm:inline">↑↓ navigate · ↵ open · esc close</span>
+        </div>
       </DialogContent>
     </Dialog>
   );
