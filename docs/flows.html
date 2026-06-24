@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Automation Testing Practice Platform — Flows &amp; Diagrams</title>
+    <style>
+      :root {
+        --blue: #007aff;
+        --ink: #1d1d1f;
+        --muted: #6e6e73;
+        --line: #e5e5ea;
+        --bg: #ffffff;
+        --soft: #f5f5f7;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--ink);
+        background: var(--soft);
+        line-height: 1.6;
+      }
+      .page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 48px;
+        background: var(--bg);
+      }
+      header.cover {
+        text-align: center;
+        padding: 56px 24px;
+        background: linear-gradient(135deg, rgba(0, 122, 255, 0.12), rgba(0, 122, 255, 0.02));
+        border-radius: 20px;
+        margin-bottom: 40px;
+      }
+      header.cover .logo {
+        width: 64px; height: 64px; border-radius: 16px;
+        background: var(--blue); color: #fff; display: inline-flex;
+        align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px;
+      }
+      h1 { font-size: 32px; margin: 8px 0; letter-spacing: -0.02em; }
+      h2 {
+        font-size: 24px; margin-top: 8px; padding-bottom: 8px;
+        border-bottom: 2px solid var(--line); letter-spacing: -0.01em;
+      }
+      h3 { font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+      p.lead { font-size: 18px; color: var(--muted); margin-top: 0; }
+      .muted { color: var(--muted); }
+      section { margin-top: 40px; }
+      .diagram {
+        background: var(--soft); border: 1px solid var(--line); border-radius: 14px;
+        padding: 20px; margin: 16px 0; text-align: center; overflow-x: auto;
+      }
+      table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 15px; }
+      th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+      th { background: var(--soft); font-weight: 600; }
+      code {
+        background: var(--soft); padding: 2px 6px; border-radius: 6px;
+        font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 0.9em;
+      }
+      .creds { background: rgba(0,122,255,0.06); border: 1px solid rgba(0,122,255,0.25); border-radius: 14px; padding: 8px 20px; }
+      .badge { display:inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+      .badge.user { background: #e3f2ff; color: #0058b0; }
+      .badge.admin { background: #fde8ef; color: #b00050; }
+      .toolbar {
+        position: sticky; top: 0; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line); padding: 12px 0; text-align: center; margin: -48px -48px 24px;
+      }
+      .btn {
+        background: var(--blue); color: #fff; border: 0; padding: 10px 18px; border-radius: 10px;
+        font-size: 14px; font-weight: 600; cursor: pointer;
+      }
+      footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; text-align: center; }
+      @media print {
+        body { background: #fff; }
+        .page { max-width: none; padding: 0 12mm; }
+        .no-print { display: none !important; }
+        section { break-before: page; }
+        header.cover { break-after: page; }
+        .diagram { break-inside: avoid; }
+        h2 { break-after: avoid; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="toolbar no-print">
+        <button class="btn" onclick="window.print()">⬇️  Save as PDF (Ctrl / Cmd + P)</button>
+        <span class="muted">&nbsp;&nbsp;Then choose “Save as PDF” as the destination.</span>
+      </div>
+
+      <header class="cover">
+        <div class="logo">🧪</div>
+        <h1>Automation Testing Practice Platform</h1>
+        <p class="lead">Flows, diagrams &amp; demo credentials — a shareable reference</p>
+        <p class="muted">MERN · React + TypeScript · Express · MongoDB · JWT · WebSockets</p>
+      </header>
+
+      <section style="break-before: auto; margin-top: 0;">
+        <h2>🔑 Demo Credentials</h2>
+        <p>The app has two roles. The login screen no longer shows these — keep this sheet for your reference.</p>
+        <div class="creds">
+          <table>
+            <thead>
+              <tr><th>Role</th><th>Email</th><th>Password</th><th>What it unlocks</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge user">USER</span></td>
+                <td><code>user@practice.dev</code></td>
+                <td><code>User1234!</code></td>
+                <td>All practice modules, async challenges &amp; business workflows (E‑commerce, Banking, CRM, Employees)</td>
+              </tr>
+              <tr>
+                <td><span class="badge admin">ADMIN</span></td>
+                <td><code>admin@practice.dev</code></td>
+                <td><code>Admin123!</code></td>
+                <td>Everything a user can do <strong>plus</strong> User Management and the Test‑Data Generator</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted">
+          ℹ️ There is no separate “employee” login — the Employee portal, CRM, Banking and E‑commerce are
+          features any signed‑in user can access. Admin adds user management + bulk test‑data generation.
+          These are seed defaults; change them in <code>server/src/seeders/index.ts</code> before a public deployment.
+        </p>
+      </section>
+
+      <section>
+        <h2>🏗️ System Architecture</h2>
+        <p>Single‑page React app talking to an Express API (controller → service → repository) over REST + WebSockets, backed by MongoDB.</p>
+        <pre class="mermaid diagram">
+flowchart LR
+    subgraph Client["Browser"]
+        SPA["React 18 SPA<br/>Redux Toolkit · TanStack Query"]
+    end
+    subgraph Server["Node.js API (Express)"]
+        REST["REST controllers"]
+        WS["Socket.IO gateway"]
+        SVC["Service layer"]
+        REPO["Repository layer"]
+    end
+    DB[("MongoDB")]
+    SPA -->|HTTPS /api| REST
+    SPA -->|WebSocket| WS
+    REST --> SVC --> REPO --> DB
+    WS --> SVC
+        </pre>
+      </section>
+
+      <section>
+        <h2>🔐 Authentication Flow</h2>
+        <p>JWT issued as <code>httpOnly</code> cookies (access + refresh). The SPA auto‑refreshes on 401.</p>
+        <pre class="mermaid diagram">
+sequenceDiagram
+    actor U as User
+    participant C as React SPA
+    participant A as API (Express)
+    participant DB as MongoDB
+    U->>C: Enter email + password
+    C->>A: POST /api/auth/login
+    A->>DB: Find user + bcrypt compare
+    DB-->>A: User record
+    A-->>C: 200 · httpOnly cookies · accessToken
+    C->>A: GET /api/auth/me
+    A-->>C: Current user
+    C-->>U: Redirect to dashboard
+    Note over C,A: On 401 the SPA calls POST /api/auth/refresh
+        </pre>
+      </section>
+
+      <section>
+        <h2>👤 User Flow</h2>
+        <p>What a signed‑in user (<code>user@practice.dev</code>) can reach.</p>
+        <pre class="mermaid diagram">
+flowchart TD
+    Start([Visit app]) --> Auth{Authenticated?}
+    Auth -- No --> SignIn[Sign in / Register]
+    SignIn --> Dash[Dashboard]
+    Auth -- Yes --> Dash
+    Dash --> Modules[20+ Practice Modules]
+    Dash --> Challenges[Async / Dynamic Challenges]
+    Dash --> Workflows[Business Workflows]
+    Workflows --> Shop[E-commerce]
+    Workflows --> Bank[Banking]
+    Workflows --> Crm[CRM]
+    Workflows --> Emp[Employees]
+        </pre>
+      </section>
+
+      <section>
+        <h2>🛡️ Admin Flow</h2>
+        <p>An admin (<code>admin@practice.dev</code>) gets everything a user does, plus privileged tools.</p>
+        <pre class="mermaid diagram">
+flowchart TD
+    A([Sign in as admin]) --> D[Dashboard]
+    D --> All[Everything a user can do]
+    D --> UM[User Management<br/>/api/users]
+    D --> TD[Test-Data Generator<br/>/api/admin/test-data]
+    UM --> CU[Create / Update / Delete users]
+    TD --> Gen[Bulk-generate users · products · orders · customers · employees]
+        </pre>
+      </section>
+
+      <section>
+        <h2>👔 Employee (HR) Flow</h2>
+        <p>The Employees workflow is a full CRUD HR portal.</p>
+        <pre class="mermaid diagram">
+flowchart LR
+    E([Employees page]) --> L[List + search + paginate]
+    L --> C[Add employee] --> API1[(POST /api/employees)]
+    L --> U[Edit employee] --> API2[(PUT /api/employees/:id)]
+    L --> Del[Delete employee] --> API3[(DELETE /api/employees/:id)]
+        </pre>
+      </section>
+
+      <section>
+        <h2>🛒 E‑commerce Flow</h2>
+        <pre class="mermaid diagram">
+flowchart LR
+    P[Browse products] --> Cart[Add to cart]
+    Cart --> Place[Place order]
+    Place --> API[(POST /api/orders)]
+    API --> S[Status: pending → paid → shipped → delivered]
+        </pre>
+      </section>
+
+      <section>
+        <h2>🏦 Banking Flow</h2>
+        <pre class="mermaid diagram">
+flowchart TD
+    Acc[Select account] --> Amt[Enter amount]
+    Amt --> T[Transfer]
+    T --> V{Sufficient balance?}
+    V -- Yes --> OK[Update balances · show receipt]
+    V -- No --> Err[Show validation error]
+        </pre>
+      </section>
+
+      <section>
+        <h2>👥 CRM Lead Lifecycle</h2>
+        <pre class="mermaid diagram">
+stateDiagram-v2
+    [*] --> lead
+    lead --> active: convert
+    active --> inactive: churn
+    inactive --> active: re-engage
+    active --> [*]
+        </pre>
+      </section>
+
+      <section>
+        <h2>🗄️ Database Schema (ERD)</h2>
+        <pre class="mermaid diagram">
+erDiagram
+    USER {
+        string id PK
+        string email UK
+        string role
+    }
+    PRODUCT {
+        string id PK
+        string sku UK
+        number price
+    }
+    ORDER {
+        string id PK
+        string orderNumber UK
+        string status
+    }
+    ORDER_ITEM {
+        string product FK
+        number quantity
+    }
+    CUSTOMER {
+        string id PK
+        string status
+    }
+    EMPLOYEE {
+        string id PK
+        string employeeId UK
+    }
+    ORDER ||--o{ ORDER_ITEM : embeds
+    ORDER_ITEM }o--|| PRODUCT : references
+        </pre>
+      </section>
+
+      <section>
+        <h2>☁️ Deployment Topology</h2>
+        <p>Frontend on Vercel, backend on Render, database on MongoDB Atlas, kept awake by UptimeRobot.</p>
+        <pre class="mermaid diagram">
+flowchart LR
+    Dev[You] -->|git push| GH[(GitHub repo)]
+    GH -->|auto deploy| V[Vercel · React SPA]
+    GH -->|auto deploy| R[Render · Express API]
+    User((User)) -->|HTTPS| V
+    V -->|/api over HTTPS| R
+    R -->|mongodb+srv| Atlas[(MongoDB Atlas)]
+    UR[UptimeRobot] -->|ping /api/health every 5 min| R
+        </pre>
+        <table>
+          <thead><tr><th>Piece</th><th>Platform</th><th>Key setting</th></tr></thead>
+          <tbody>
+            <tr><td>Frontend</td><td>Vercel</td><td><code>VITE_API_URL=https://&lt;api&gt;.onrender.com/api</code></td></tr>
+            <tr><td>Backend</td><td>Render</td><td><code>NODE_ENV=production</code>, <code>MONGODB_URI</code>, JWT secrets, <code>FRONTEND_URL</code></td></tr>
+            <tr><td>Database</td><td>MongoDB Atlas</td><td>Whitelist <code>0.0.0.0/0</code></td></tr>
+            <tr><td>Keep‑alive</td><td>UptimeRobot</td><td>Ping <code>/api/health</code> every 5 min</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>🧩 Module &amp; Workflow Catalog</h2>
+        <h3>Practice modules</h3>
+        <p>Buttons · Inputs · Checkboxes · Radios · Dropdowns · Sliders · Date Picker · Tables · Modals ·
+           Drag &amp; Drop · Mouse Actions · Keyboard · File Upload · Infinite Scroll · Iframes · Nested Frames ·
+           Shadow DOM · WebSockets · API Testing · Auth Demo</p>
+        <h3>Async &amp; dynamic challenges</h3>
+        <p>Autocomplete · Multi‑step Wizard · Dynamic IDs · Flaky endpoints</p>
+        <h3>Business workflows</h3>
+        <p>E‑commerce · Banking · CRM · Employees (HR)</p>
+      </section>
+
+      <footer>
+        Automation Testing Practice Platform · Generated reference sheet ·
+        Every interactive element exposes a stable <code>data-testid</code> + ARIA attributes.
+      </footer>
+    </div>
+
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+    </script>
+  </body>
+</html>

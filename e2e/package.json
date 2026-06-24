@@ -1,0 +1,25 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "End-to-end sample suites (Playwright, Cypress, Selenium-WebDriver) for the Automation Testing Practice Platform.",
+  "license": "MIT",
+  "scripts": {
+    "playwright:install": "playwright install --with-deps",
+    "test:playwright": "playwright test --config playwright/playwright.config.ts",
+    "test:cypress": "cypress run --project cypress",
+    "cypress:open": "cypress open --project cypress",
+    "test:selenium": "mocha"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.10.5",
+    "@types/selenium-webdriver": "^4.1.28",
+    "cypress": "^13.17.0",
+    "mocha": "^11.0.1",
+    "selenium-webdriver": "^4.27.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
