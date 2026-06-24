@@ -3,10 +3,14 @@ import { createApp } from './app';
 import { env } from './config/env';
 import { logger } from './config/logger';
 import { connectDatabase, disconnectDatabase } from './config/database';
+import { ensureSeeded } from './seeders/seedData';
 import { initializeSocket } from './sockets/socketServer';
 
 async function bootstrap(): Promise<void> {
   await connectDatabase();
+
+  // Seed demo accounts + data once on a fresh database (no-op if already seeded).
+  await ensureSeeded();
 
   const app = createApp();
   const httpServer = createServer(app);
