@@ -1,15 +1,39 @@
 import { Link, NavLink } from 'react-router-dom';
-import { LayoutDashboard, FlaskConical, X } from 'lucide-react';
+import {
+  LayoutDashboard,
+  FlaskConical,
+  X,
+  ShieldCheck,
+  Users,
+  Wallet,
+  Package,
+  ScrollText,
+  Megaphone,
+} from 'lucide-react';
 import { MODULE_CATEGORIES, getModulesByCategory } from '@/config/modules';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAuth } from '@/hooks/useAuth';
 import { setSidebar } from '@/store/uiSlice';
 import { cn } from '@/lib/utils';
 
-function NavItem({ to, label, icon: Icon, testId }: { to: string; label: string; icon: React.ElementType; testId: string }) {
+function NavItem({
+  to,
+  label,
+  icon: Icon,
+  testId,
+  end,
+}: {
+  to: string;
+  label: string;
+  icon: React.ElementType;
+  testId: string;
+  end?: boolean;
+}) {
   const dispatch = useAppDispatch();
   return (
     <NavLink
       to={to}
+      end={end}
       data-testid={testId}
       onClick={() => dispatch(setSidebar(false))}
       className={({ isActive }) =>
@@ -28,9 +52,20 @@ function NavItem({ to, label, icon: Icon, testId }: { to: string; label: string;
   );
 }
 
+const ADMIN_ITEMS = [
+  { id: 'admin', to: '/admin', label: 'Dashboard', icon: ShieldCheck, end: true },
+  { id: 'admin-users', to: '/admin/users', label: 'Users & Roles', icon: Users },
+  { id: 'admin-accounts', to: '/admin/accounts', label: 'Accounts', icon: Wallet },
+  { id: 'admin-products', to: '/admin/products', label: 'Products', icon: Package },
+  { id: 'admin-audit', to: '/admin/audit', label: 'Audit Log', icon: ScrollText },
+  { id: 'admin-notifications', to: '/admin/notifications', label: 'Broadcast', icon: Megaphone },
+];
+
 export function Sidebar() {
   const open = useAppSelector((state) => state.ui.sidebarOpen);
   const dispatch = useAppDispatch();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   return (
     <>
@@ -71,8 +106,26 @@ export function Sidebar() {
 
         <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4" data-testid="sidebar-nav">
           <div className="space-y-1">
-            <NavItem to="/" label="Dashboard" icon={LayoutDashboard} testId="nav-dashboard" />
+            <NavItem to="/" label="Dashboard" icon={LayoutDashboard} testId="nav-dashboard" end />
           </div>
+
+          {isAdmin ? (
+            <div className="space-y-1" data-testid="sidebar-admin">
+              <p className="px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+                Admin Panel
+              </p>
+              {ADMIN_ITEMS.map((item) => (
+                <NavItem
+                  key={item.id}
+                  to={item.to}
+                  label={item.label}
+                  icon={item.icon}
+                  testId={`nav-${item.id}`}
+                  end={item.end}
+                />
+              ))}
+            </div>
+          ) : null}
 
           {MODULE_CATEGORIES.map((category) => {
             const modules = getModulesByCategory(category);

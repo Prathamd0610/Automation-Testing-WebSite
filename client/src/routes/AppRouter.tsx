@@ -2,6 +2,7 @@ import { Suspense, lazy, type ComponentType } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { AdminRoute } from '@/components/auth/AdminRoute';
 import { Spinner } from '@/components/ui/spinner';
 
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
@@ -49,6 +50,15 @@ const EcommercePage = lazy(() => import('@/pages/workflows/EcommercePage'));
 const BankingPage = lazy(() => import('@/pages/workflows/BankingPage'));
 const CrmPage = lazy(() => import('@/pages/workflows/CrmPage'));
 const EmployeesPage = lazy(() => import('@/pages/workflows/EmployeesPage'));
+
+// Admin (admin-only)
+const AdminLayout = lazy(() => import('@/pages/admin/AdminLayout'));
+const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'));
+const AdminUsersPage = lazy(() => import('@/pages/admin/AdminUsersPage'));
+const AdminAccountsPage = lazy(() => import('@/pages/admin/AdminAccountsPage'));
+const AdminProductsPage = lazy(() => import('@/pages/admin/AdminProductsPage'));
+const AdminAuditLogPage = lazy(() => import('@/pages/admin/AdminAuditLogPage'));
+const AdminNotificationsPage = lazy(() => import('@/pages/admin/AdminNotificationsPage'));
 
 function RouteFallback() {
   return (
@@ -119,6 +129,17 @@ export function AppRouter() {
           <Route path="workflows/banking" element={lazyElement(BankingPage)} />
           <Route path="workflows/crm" element={lazyElement(CrmPage)} />
           <Route path="workflows/employees" element={lazyElement(EmployeesPage)} />
+        </Route>
+
+        <Route element={<AdminRoute />}>
+          <Route path="admin" element={lazyElement(AdminLayout)}>
+            <Route index element={lazyElement(AdminDashboardPage)} />
+            <Route path="users" element={lazyElement(AdminUsersPage)} />
+            <Route path="accounts" element={lazyElement(AdminAccountsPage)} />
+            <Route path="products" element={lazyElement(AdminProductsPage)} />
+            <Route path="audit" element={lazyElement(AdminAuditLogPage)} />
+            <Route path="notifications" element={lazyElement(AdminNotificationsPage)} />
+          </Route>
         </Route>
 
         <Route path="*" element={lazyElement(NotFoundPage)} />

@@ -1,6 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { logger } from '../config/logger';
 import { User } from '../models/User';
+import { Account } from '../models/Account';
+import { Transaction } from '../models/Transaction';
 import { Product } from '../models/Product';
 import { Customer } from '../models/Customer';
 import { Employee } from '../models/Employee';
@@ -16,38 +18,14 @@ import {
 
 const TASK_STATUSES = ['todo', 'in_progress', 'review', 'done'] as const;
 
-/**
- * Populates the database with the deterministic demo accounts and fake records.
- * Assumes an active Mongoose connection — connection lifecycle is the caller's
- * responsibility. Destructive: clears the collections it seeds first.
- */
-export async function seedDatabase(): Promise<void> {
-  logger.info('Seeding database...');
+/** Deterministic demo accounts used in docs, e2e tests, and manual login. */
+const DEMO_ACCOUNTS = [
+  { name: 'Platform Admin', email: 'admin@practice.dev', password: 'Admin123!', role: 'admin' as const },
+  { name: 'Demo Tester', email: 'user@practice.dev', password: 'User1234!', role: 'user' as const },
+];
 
-  await Promise.all([
-    User.deleteMany({}),
-    Product.deleteMany({}),
-    Customer.deleteMany({}),
-    Employee.deleteMany({}),
-    Order.deleteMany({}),
-    Task.deleteMany({}),
-    Notification.deleteMany({}),
-  ]);
-
-  // Deterministic accounts for documentation and e2e tests.
-  await User.create({
-    name: 'Platform Admin',
-    email: 'admin@practice.dev',
-    password: 'Admin123!',
-    role: 'admin',
-  });
-  await User.create({
-    name: 'Demo Tester',
-    email: 'user@practice.dev',
-    password: 'User1234!',
-    role: 'user',
-  });
-
+/** Inserts the fake demo records (non-destructive — does not clear collections). */
+async function insertDemoData(): Promise<void> {
   await Product.insertMany(Array.from({ length: 60 }, buildFakeProduct));
   await Customer.insertMany(Array.from({ length: 40 }, buildFakeCustomer));
   await Employee.insertMany(Array.from({ length: 40 }, buildFakeEmployee));
@@ -73,6 +51,53 @@ export async function seedDatabase(): Promise<void> {
       read: faker.datatype.boolean(),
     })),
   );
+}
+
+/** Demo starting balances per account email. */
+const DEMO_BALANCES: Record<string, { checking: number; savings: number }> = {
+  'admin@practice.dev': { checking: 12_000, savings: 48_000 },
+  'user@practice.dev': { checking: 5_200.75, savings: 18_230.4 },
+};
+
+/** Creates any demo account that does not already exist (idempotent). */
+async function ensureDemoAccounts(): Promise<void> {
+  for (const account of DEMO_ACCOUNTS) {
+    let user = await User.findOne({ email: account.email });
+    if (!user) {
+      // User.create triggers the password-hashing pre-save hook.
+      user = await User.create(account);
+      logger.info(`Created demo account: ${account.email}`);
+    }
+    const hasBank = await Account.findOne({ user: user.id });
+    if (!hasBank) {
+      const balances = DEMO_BALANCES[account.email] ?? { checking: 0, savings: 0 };
+      await Account.create({ user: user.id, ...balances });
+    }
+  }
+}
+
+/**
+ * Populates the database with the deterministic demo accounts and fake records.
+ * Assumes an active Mongoose connection — connection lifecycle is the caller's
+ * responsibility. Destructive: clears the collections it seeds first.
+ */
+export async function seedDatabase(): Promise<void> {
+  logger.info('Seeding database...');
+
+  await Promise.all([
+    User.deleteMany({}),
+    Account.deleteMany({}),
+    Transaction.deleteMany({}),
+    Product.deleteMany({}),
+    Customer.deleteMany({}),
+    Employee.deleteMany({}),
+    Order.deleteMany({}),
+    Task.deleteMany({}),
+    Notification.deleteMany({}),
+  ]);
+
+  await ensureDemoAccounts();
+  await insertDemoData();
 
   logger.info('\u2705 Seed complete');
   logger.info('   Admin: admin@practice.dev / Admin123!');
@@ -80,16 +105,20 @@ export async function seedDatabase(): Promise<void> {
 }
 
 /**
- * Seeds the database only when it is empty (no users yet). Safe to call on every
- * server boot: it runs once on a fresh database and is a no-op thereafter.
- * Opt out by setting AUTO_SEED=false (e.g. once you manage data manually).
+ * Non-destructive startup seed. Always guarantees the demo accounts exist (so
+ * admin login works even if the DB already has user-registered accounts), and
+ * seeds the demo data set once when no demo records are present yet.
+ * Opt out entirely with AUTO_SEED=false.
  */
 export async function ensureSeeded(): Promise<void> {
   if (process.env.AUTO_SEED === 'false') return;
 
-  const userCount = await User.estimatedDocumentCount();
-  if (userCount > 0) return;
+  await ensureDemoAccounts();
 
-  logger.info('Database is empty \u2014 running one-time startup seed...');
-  await seedDatabase();
+  const productCount = await Product.estimatedDocumentCount();
+  if (productCount === 0) {
+    logger.info('No demo data found \u2014 seeding demo records...');
+    await insertDemoData();
+  }
 }
+

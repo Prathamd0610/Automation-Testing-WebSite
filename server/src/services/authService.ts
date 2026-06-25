@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { userRepository } from '../repositories';
 import { auditLogRepository } from '../repositories';
+import { Account } from '../models/Account';
 import type { UserDocument } from '../models/User';
 import { AppError } from '../utils/AppError';
 import {
@@ -48,6 +49,7 @@ class AuthService {
     if (existing) throw AppError.conflict('Email is already registered');
 
     const user = (await userRepository.create({ name, email, password })) as UserDocument;
+    await Account.create({ user: user.id });
     const tokens = await issueTokens(user);
     await this.audit('user.register', user, ctx);
     return { ...tokens, user: user.toJSON() };
