@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { ModuleNav } from '@/components/common/ModuleNav';
 
 interface PageContainerProps {
   children: ReactNode;
@@ -7,7 +9,13 @@ interface PageContainerProps {
 }
 
 export function PageContainer({ children, className }: PageContainerProps) {
-  return <div className={cn('mx-auto w-full max-w-6xl space-y-8', className)}>{children}</div>;
+  const { pathname } = useLocation();
+  return (
+    <div className={cn('mx-auto w-full max-w-6xl space-y-8', className)}>
+      {children}
+      <ModuleNav path={pathname} />
+    </div>
+  );
 }
 
 interface SectionProps {

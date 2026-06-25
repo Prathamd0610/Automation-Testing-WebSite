@@ -74,10 +74,34 @@ apiClient.interceptors.response.use(
 /** Extracts a human-friendly message from an Axios error. */
 export function getErrorMessage(error: unknown, fallback = 'Something went wrong'): string {
   if (error instanceof AxiosError) {
-    return (error.response?.data as { message?: string } | undefined)?.message ?? error.message ?? fallback;
+    const data = error.response?.data as
+      | { message?: string; details?: unknown }
+      | undefined;
+    const message = data?.message ?? error.message ?? fallback;
+
+    // Surface server-side field validation details so users know exactly what
+    // to fix instead of a generic "Validation failed".
+    const fieldErrors = flattenFieldErrors(data?.details);
+    return fieldErrors ? `${message}: ${fieldErrors}` : message;
   }
   if (error instanceof Error) return error.message;
   return fallback;
+}
+
+/**
+ * Turns a Zod-style `{ field: ["msg", ...] }` (or `{ field: "msg" }`) details
+ * object into a short, readable string. Returns null when there is nothing
+ * useful to show.
+ */
+function flattenFieldErrors(details: unknown): string | null {
+  if (!details || typeof details !== 'object') return null;
+  const parts = Object.entries(details as Record<string, unknown>)
+    .map(([field, value]) => {
+      const text = Array.isArray(value) ? value.join(', ') : String(value);
+      return text ? `${field} — ${text}` : '';
+    })
+    .filter(Boolean);
+  return parts.length ? parts.join('; ') : null;
 }
 
 export type { AxiosRequestConfig };

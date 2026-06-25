@@ -15,15 +15,14 @@ import {
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { ModuleCard } from '@/components/common/ModuleCard';
+import { CategoryCard } from '@/components/common/CategoryCard';
 import { AdSlot } from '@/components/common/AdSlot';
 import { ScrollReveal } from '@/components/common/ScrollReveal';
 import { AnimatedCounter } from '@/components/common/AnimatedCounter';
 import {
   MODULES,
   MODULE_CATEGORIES,
-  getModulesByCategory,
   searchModules,
-  categorySlug,
   type ModuleMeta,
 } from '@/config/modules';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -81,7 +80,7 @@ function Hero() {
       <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <Link
           to="/modules"
-          className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[hsl(38_95%_50%)] px-6 py-3 text-sm font-semibold text-white shadow-apple-lg transition-transform hover:-translate-y-0.5"
+          className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[hsl(214_85%_50%)] px-6 py-3 text-sm font-semibold text-white shadow-apple-lg transition-transform hover:-translate-y-0.5"
         >
           Browse modules
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
@@ -219,51 +218,26 @@ export function ModernDashboard() {
             </ScrollReveal>
           ) : null}
 
-          {/* Explore by category — every activity rendered statically (no
-              scroll-jacking) so automation can reach any module immediately. */}
-          <section id="explore" className="space-y-10">
+          {/* Browse by category — pick a category to open its landing page.
+              Rendered statically (no scroll-jacking) so automation can reach
+              any category card immediately. */}
+          <section id="explore" className="space-y-6" data-testid="browse-by-category">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                Explore by category
+                Browse by category
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Every module and challenge, grouped by category.
+                Pick a category to explore its modules and challenges.
               </p>
             </div>
 
-            {MODULE_CATEGORIES.map((category) => {
-              const modules = getModulesByCategory(category);
-              if (modules.length === 0) return null;
-              const Icon = modules[0]?.icon;
-              return (
-                <section
-                  key={category}
-                  data-testid={`category-section-${categorySlug(category)}`}
-                  className="space-y-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="brand-icon flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      {Icon ? <Icon className="h-5 w-5" aria-hidden="true" /> : null}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-lg font-bold tracking-tight text-foreground">{category}</h3>
-                      <p className="text-xs text-muted-foreground">{modules.length} modules</p>
-                    </div>
-                    <Link
-                      to={`/category/${categorySlug(category)}`}
-                      className="shrink-0 text-sm font-medium text-primary hover:underline"
-                    >
-                      Open category
-                    </Link>
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {modules.map((module) => (
-                      <ModuleCard key={module.id} module={module} />
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {MODULE_CATEGORIES.map((category, index) => (
+                <ScrollReveal key={category} delay={index * 0.05}>
+                  <CategoryCard category={category} />
+                </ScrollReveal>
+              ))}
+            </div>
           </section>
         </>
       ) : null}

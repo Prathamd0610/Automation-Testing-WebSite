@@ -493,3 +493,25 @@ export function categorySection(category: ModuleCategory): ModuleSection {
 export function getCategoriesBySection(section: ModuleSection): ModuleCategory[] {
   return MODULE_CATEGORIES.filter((category) => categorySection(category) === section);
 }
+
+/** Find a module by its route path (e.g. "/modules/buttons"). */
+export function getModuleByPath(path: string): ModuleMeta | undefined {
+  return MODULES.find((m) => m.path === path);
+}
+
+/**
+ * Previous/next module relative to the given route path, following the order
+ * modules are declared in {@link MODULES}. Returns `undefined` for either side
+ * when the current module is at the start/end of the list.
+ */
+export function getAdjacentModules(path: string): {
+  prev?: ModuleMeta;
+  next?: ModuleMeta;
+} {
+  const index = MODULES.findIndex((m) => m.path === path);
+  if (index === -1) return {};
+  return {
+    prev: index > 0 ? MODULES[index - 1] : undefined,
+    next: index < MODULES.length - 1 ? MODULES[index + 1] : undefined,
+  };
+}

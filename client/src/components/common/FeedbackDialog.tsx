@@ -39,19 +39,47 @@ const EMPTY: CreateFeedbackPayload = {
   priority: 'medium',
 };
 
+// Mirror the server validation rules so users get instant, specific feedback
+// instead of a generic "Validation failed" from the API.
+const SUBJECT_MIN = 3;
+const SUBJECT_MAX = 160;
+const MESSAGE_MIN = 5;
+const MESSAGE_MAX = 2000;
+
 export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
   const { user, isAuthenticated } = useAuth();
   const location = useLocation();
   const [form, setForm] = useState<CreateFeedbackPayload>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
+  const [touched, setTouched] = useState(false);
+
+  const subject = form.subject.trim();
+  const message = form.message.trim();
+  const subjectError =
+    subject.length < SUBJECT_MIN
+      ? `Subject must be at least ${SUBJECT_MIN} characters.`
+      : subject.length > SUBJECT_MAX
+        ? `Subject must be at most ${SUBJECT_MAX} characters.`
+        : null;
+  const messageError =
+    message.length < MESSAGE_MIN
+      ? `Details must be at least ${MESSAGE_MIN} characters.`
+      : message.length > MESSAGE_MAX
+        ? `Details must be at most ${MESSAGE_MAX} characters.`
+        : null;
+  const isValid = !subjectError && !messageError;
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setTouched(true);
+    if (!isValid) return;
     setSubmitting(true);
     try {
-      await feedbackApi.submit({ ...form, pageUrl: location.pathname });
+      // Send trimmed values so trailing whitespace can't trip server validation.
+      await feedbackApi.submit({ ...form, subject, message, pageUrl: location.pathname });
       toast.success('Thanks! Your feedback was submitted.');
       setForm(EMPTY);
+      setTouched(false);
       onOpenChange(false);
     } catch (err) {
       toast.error(getErrorMessage(err));
@@ -140,12 +168,24 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
                 id="feedback-subject"
                 value={form.subject}
                 onChange={(e) => setForm((p) => ({ ...p, subject: e.target.value }))}
+                onBlur={() => setTouched(true)}
                 required
-                minLength={3}
-                maxLength={160}
-                placeholder="Short summary"
+                minLength={SUBJECT_MIN}
+                maxLength={SUBJECT_MAX}
+                placeholder={`Short summary (${SUBJECT_MIN}–${SUBJECT_MAX} characters)`}
                 data-testid="feedback-subject"
+                aria-invalid={touched && !!subjectError}
+                aria-describedby={touched && subjectError ? 'feedback-subject-error' : undefined}
               />
+              {touched && subjectError ? (
+                <p
+                  id="feedback-subject-error"
+                  className="text-sm text-destructive"
+                  data-testid="feedback-subject-error"
+                >
+                  {subjectError}
+                </p>
+              ) : null}
             </div>
 
             <div className="space-y-2">
@@ -154,20 +194,36 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
                 id="feedback-message"
                 value={form.message}
                 onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
+                onBlur={() => setTouched(true)}
                 required
-                minLength={5}
-                maxLength={2000}
+                minLength={MESSAGE_MIN}
+                maxLength={MESSAGE_MAX}
                 rows={5}
-                placeholder="Describe the feature or issue, steps to reproduce, expected behavior…"
+                placeholder={`Describe the feature or issue, steps to reproduce, expected behavior… (${MESSAGE_MIN}–${MESSAGE_MAX} characters)`}
                 data-testid="feedback-message"
+                aria-invalid={touched && !!messageError}
+                aria-describedby={touched && messageError ? 'feedback-message-error' : undefined}
               />
+              {touched && messageError ? (
+                <p
+                  id="feedback-message-error"
+                  className="text-sm text-destructive"
+                  data-testid="feedback-message-error"
+                >
+                  {messageError}
+                </p>
+              ) : null}
             </div>
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={submitting} data-testid="feedback-submit">
+              <Button
+                type="submit"
+                disabled={submitting || (touched && !isValid)}
+                data-testid="feedback-submit"
+              >
                 {submitting ? (
                   <Spinner label="Sending" />
                 ) : (

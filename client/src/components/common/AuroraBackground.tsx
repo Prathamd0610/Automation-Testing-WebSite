@@ -33,19 +33,19 @@ export function AuroraBackground({ containerRef }: AuroraBackgroundProps) {
         style={{ y: reduceMotion ? 0 : y1 }}
         className={`aurora-blob ${drift} -left-32 -top-24 h-[28rem] w-[28rem]`}
       >
-        <div className="h-full w-full rounded-full bg-[hsl(28_95%_55%/0.50)]" />
+        <div className="h-full w-full rounded-full bg-[hsl(231_70%_55%/0.50)]" />
       </motion.div>
       <motion.div
         style={{ y: reduceMotion ? 0 : y2 }}
         className={`aurora-blob ${drift} right-[-10rem] top-32 h-[32rem] w-[32rem]`}
       >
-        <div className="h-full w-full rounded-full bg-[hsl(40_95%_55%/0.42)]" />
+        <div className="h-full w-full rounded-full bg-[hsl(210_80%_55%/0.42)]" />
       </motion.div>
       <motion.div
         style={{ y: reduceMotion ? 0 : y3 }}
         className={`aurora-blob ${drift} bottom-[-8rem] left-1/3 h-[26rem] w-[26rem]`}
       >
-        <div className="h-full w-full rounded-full bg-[hsl(14_90%_58%/0.38)]" />
+        <div className="h-full w-full rounded-full bg-[hsl(252_70%_60%/0.38)]" />
       </motion.div>
     </div>
   );

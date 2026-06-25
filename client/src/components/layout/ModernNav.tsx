@@ -87,7 +87,7 @@ export function ModernNav() {
             data-testid="sidebar-logo"
             className="flex shrink-0 items-center gap-2 rounded-full px-1 py-1 font-semibold"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[hsl(38_95%_52%)] text-white shadow-apple">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[hsl(214_85%_52%)] text-white shadow-apple">
               <FlaskConical className="h-5 w-5" aria-hidden="true" />
             </span>
             <span className="hidden text-sm sm:inline">Automation Lab</span>
@@ -151,7 +151,7 @@ export function ModernNav() {
                     aria-label="Account menu"
                     data-testid="user-menu"
                   >
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[hsl(38_95%_52%)] text-sm font-semibold text-white">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[hsl(214_85%_52%)] text-sm font-semibold text-white">
                       {user?.name?.charAt(0).toUpperCase() ?? 'U'}
                     </span>
                   </Button>
