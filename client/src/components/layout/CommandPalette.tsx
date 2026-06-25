@@ -1,16 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Clock, ArrowRight, Star } from 'lucide-react';
+import { Search, Clock, Star } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import {
-  MODULES,
-  MODULE_CATEGORIES,
-  getModulesByCategory,
-  searchModules,
-  categorySlug,
-  CATEGORY_DESCRIPTIONS,
-} from '@/config/modules';
+import { MODULES, MODULE_CATEGORIES, searchModules } from '@/config/modules';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { toggleFavorite } from '@/store/prefsSlice';
 import { cn } from '@/lib/utils';
@@ -74,48 +67,30 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       Icon: m.icon,
     });
 
-    // Classic skin keeps the original flat list.
-    if (!isModern) {
-      return [{ items: searchModules(q).map(toModuleEntry) }];
-    }
-
-    // Modern + active query → results grouped by category.
-    if (q) {
-      const matches = searchModules(q);
-      return MODULE_CATEGORIES.map((category) => ({
-        header: category,
-        items: matches.filter((m) => m.category === category).map(toModuleEntry),
-      })).filter((g) => g.items.length > 0);
-    }
-
-    // Modern + empty query → curated quick access.
+    const source = q ? searchModules(q) : MODULES;
     const result: Group[] = [];
-    const byId = new Map(MODULES.map((m) => [m.id, m] as const));
-    const recents = recentIds.map((id) => byId.get(id)).filter(Boolean) as typeof MODULES;
-    if (recents.length > 0) {
-      result.push({
-        header: 'Recently viewed',
-        headerIcon: Clock,
-        items: recents.slice(0, 4).map(toModuleEntry),
-      });
+
+    // When idle, surface recently-viewed modules first for quick re-entry.
+    if (!q) {
+      const byId = new Map(MODULES.map((m) => [m.id, m] as const));
+      const recents = recentIds.map((id) => byId.get(id)).filter(Boolean) as typeof MODULES;
+      if (recents.length > 0) {
+        result.push({
+          header: 'Recently viewed',
+          headerIcon: Clock,
+          items: recents.slice(0, 4).map(toModuleEntry),
+        });
+      }
     }
-    result.push({
-      header: 'Browse by category',
-      items: MODULE_CATEGORIES.map((category): Entry => {
-        const modules = getModulesByCategory(category);
-        return {
-          kind: 'category',
-          id: `cat-${category}`,
-          title: category,
-          description: CATEGORY_DESCRIPTIONS[category],
-          meta: `${modules.length} modules`,
-          path: `/category/${categorySlug(category)}`,
-          Icon: modules[0]?.icon ?? Search,
-        };
-      }),
-    });
+
+    // Every activity, segregated by its category.
+    for (const category of MODULE_CATEGORIES) {
+      const items = source.filter((m) => m.category === category).map(toModuleEntry);
+      if (items.length > 0) result.push({ header: category, items });
+    }
+
     return result;
-  }, [query, isModern, recentIds]);
+  }, [query, recentIds]);
 
   const entries = useMemo(() => groups.flatMap((g) => g.items), [groups]);
 
@@ -211,7 +186,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
           ) : (
             groups.map((group) => (
               <li key={group.header ?? 'all'} className="mb-1">
-                {group.header && isModern ? (
+                {group.header ? (
                   <p className="flex items-center gap-1.5 px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                     {group.headerIcon ? (
                       <group.headerIcon className="h-3.5 w-3.5" aria-hidden="true" />
@@ -295,8 +270,6 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                                 aria-hidden="true"
                               />
                             </button>
-                          ) : isModern && selected ? (
-                            <ArrowRight className="h-4 w-4 text-primary" aria-hidden="true" />
                           ) : null}
                         </div>
                       </li>

@@ -103,20 +103,18 @@ export function ModernNav() {
             ))}
           </div>
 
-          {/* Prominent search */}
-          <button
-            type="button"
+          {/* Search — magnifier icon opens the full command palette. */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="ml-auto rounded-full"
             onClick={() => setPaletteOpen(true)}
             data-testid="open-search"
             aria-label="Search modules and challenges"
-            className="ml-auto flex h-9 items-center gap-2 rounded-full border border-border/70 bg-background/60 px-3 text-sm text-muted-foreground transition-colors hover:bg-background"
+            title="Search"
           >
-            <Search className="h-4 w-4" aria-hidden="true" />
-            <span className="hidden lg:inline">Search modules…</span>
-            <kbd className="ml-1 hidden rounded border bg-background px-1.5 text-[10px] font-medium lg:inline">
-              /
-            </kbd>
-          </button>
+            <Search className="h-5 w-5" />
+          </Button>
 
           <div className="flex items-center gap-0.5">
             <Button
