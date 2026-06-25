@@ -23,8 +23,9 @@ interface AdSlotProps {
  * Google AdSense ad unit.
  *
  * Real ads load only when `VITE_ADSENSE_CLIENT` (your `ca-pub-…` id) is set AND
- * the AdSense loader script is present in `index.html`. Until then a neutral
- * placeholder keeps the layout intentional (and avoids errors in development).
+ * a real ad-unit `slot` id is provided. Until a real slot id exists, a neutral
+ * placeholder keeps the layout intentional (and avoids invalid ad requests that
+ * would otherwise log warnings or render empty units).
  */
 export function AdSlot({
   slot,
@@ -36,17 +37,22 @@ export function AdSlot({
   const client = appEnv.adsenseClient;
   const pushed = useRef(false);
 
+  // A slot id made of a single repeated digit (e.g. "0000000000") is a
+  // scaffold placeholder, not a real ad unit — don't request ads for it.
+  const isRealSlot = /^\d{6,}$/.test(slot) && !/^(\d)\1+$/.test(slot);
+  const enabled = Boolean(client) && isRealSlot;
+
   useEffect(() => {
-    if (!client || pushed.current) return;
+    if (!enabled || pushed.current) return;
     try {
       (window.adsbygoogle = window.adsbygoogle ?? []).push({});
       pushed.current = true;
     } catch {
       // Loader not ready yet or blocked by an ad blocker — fail silently.
     }
-  }, [client, slot]);
+  }, [enabled, slot]);
 
-  if (!client) {
+  if (!enabled) {
     return (
       <div
         data-testid={testId}

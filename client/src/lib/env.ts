@@ -6,7 +6,7 @@ export const appEnv = {
   apiUrl: import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api',
   appName: import.meta.env.VITE_APP_NAME ?? 'Automation Testing Practice Platform',
   environment: import.meta.env.VITE_ENVIRONMENT ?? 'development',
-  adsenseClient: import.meta.env.VITE_ADSENSE_CLIENT ?? '',
+  adsenseClient: import.meta.env.VITE_ADSENSE_CLIENT ?? 'ca-pub-4944608885960983',
 };
 
 /** API origin without the trailing `/api` (used for sockets and static uploads). */
