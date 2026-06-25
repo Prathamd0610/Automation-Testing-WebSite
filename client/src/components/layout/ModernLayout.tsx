@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { ModernNav } from './ModernNav';
+import { Footer } from './Footer';
 import { AuroraBackground } from '@/components/common/AuroraBackground';
 import { ScrollProgress } from '@/components/common/ScrollProgress';
 import { MODULES } from '@/config/modules';
@@ -54,6 +55,7 @@ export function ModernLayout() {
       >
         <Outlet />
       </main>
+      <Footer />
     </div>
   );
 }
