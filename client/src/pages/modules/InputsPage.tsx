@@ -50,19 +50,21 @@ export default function InputsPage() {
           <CardContent className="grid gap-5 pt-6 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="in-text">Text</Label>
-              <Input id="in-text" data-testid="input-text" value={values.text} onChange={set('text')} placeholder="Type something" />
+              <Input id="in-text" name="demo-text" autoComplete="off" data-testid="input-text" value={values.text} onChange={set('text')} placeholder="e.g. John Doe" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="in-email">Email</Label>
               <Input
                 id="in-email"
                 type="email"
+                name="demo-email"
+                autoComplete="off"
                 data-testid="input-email"
                 value={values.email}
                 onChange={set('email')}
                 aria-invalid={Boolean(emailError)}
                 aria-describedby={emailError ? 'email-error' : undefined}
-                placeholder="you@example.com"
+                placeholder="e.g. john@example.com"
               />
               {emailError ? (
                 <p id="email-error" role="alert" className="text-xs text-destructive" data-testid="input-email-error">
@@ -76,11 +78,13 @@ export default function InputsPage() {
                 <Input
                   id="in-password"
                   type={showPassword ? 'text' : 'password'}
+                  name="demo-password"
+                  autoComplete="new-password"
                   data-testid="input-password"
                   value={values.password}
                   onChange={set('password')}
                   className="pr-10"
-                  placeholder="••••••••"
+                  placeholder="Enter a password"
                 />
                 <button
                   type="button"
@@ -95,7 +99,7 @@ export default function InputsPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="in-number">Number</Label>
-              <Input id="in-number" type="number" data-testid="input-number" value={values.number} onChange={set('number')} placeholder="42" />
+              <Input id="in-number" type="number" name="demo-number" autoComplete="off" data-testid="input-number" value={values.number} onChange={set('number')} placeholder="e.g. 42" />
             </div>
           </CardContent>
         </Card>

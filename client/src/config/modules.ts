@@ -451,3 +451,45 @@ export function searchModules(query: string): ModuleMeta[] {
       m.tags.some((t) => t.includes(q)),
   );
 }
+
+/** One-line summary shown on each category landing page. */
+export const CATEGORY_DESCRIPTIONS: Record<ModuleCategory, string> = {
+  'Form Controls': 'Inputs, buttons, selects, checkboxes and the core building blocks of every form.',
+  Interactions: 'Mouse, keyboard, drag-and-drop and pointer-driven behaviours.',
+  Components: 'Composite widgets like modals, tables, sliders and date pickers.',
+  'Data & Network': 'API calls, file uploads, websockets and live streaming data.',
+  'Advanced DOM': 'Shadow DOM, iframes, nested frames and other tricky structures.',
+  'Async Challenges': 'Timing, dynamic ids, stale elements and deliberately flaky scenarios.',
+  'Business Workflows': 'End-to-end, multi-step journeys across realistic applications.',
+};
+
+export type ModuleSection = 'modules' | 'challenges' | 'workflows';
+
+/** Stable URL slug for a category (e.g. "Data & Network" -> "data-and-network"). */
+export function categorySlug(category: ModuleCategory): string {
+  return category
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+const SLUG_TO_CATEGORY = new Map(
+  MODULE_CATEGORIES.map((category) => [categorySlug(category), category] as const),
+);
+
+export function getCategoryBySlug(slug: string): ModuleCategory | undefined {
+  return SLUG_TO_CATEGORY.get(slug);
+}
+
+/** Which top-level section a category lives under, based on its module paths. */
+export function categorySection(category: ModuleCategory): ModuleSection {
+  const prefix = getModulesByCategory(category)[0]?.path.split('/')[1];
+  if (prefix === 'challenges') return 'challenges';
+  if (prefix === 'workflows') return 'workflows';
+  return 'modules';
+}
+
+export function getCategoriesBySection(section: ModuleSection): ModuleCategory[] {
+  return MODULE_CATEGORIES.filter((category) => categorySection(category) === section);
+}

@@ -37,6 +37,8 @@ export default function ButtonsPage() {
         <Card>
           <CardContent className="flex flex-wrap gap-3 pt-6">
             <Button
+              variant={lastAction === 'single-click' ? 'default' : 'outline'}
+              aria-pressed={lastAction === 'single-click'}
               data-testid="btn-click"
               onClick={() => {
                 setClickCount((c) => c + 1);
@@ -46,14 +48,16 @@ export default function ButtonsPage() {
               Single click
             </Button>
             <Button
-              variant="secondary"
+              variant={lastAction === 'double-click' ? 'default' : 'outline'}
+              aria-pressed={lastAction === 'double-click'}
               data-testid="btn-double-click"
               onDoubleClick={() => setLastAction('double-click')}
             >
               Double click
             </Button>
             <Button
-              variant="outline"
+              variant={lastAction === 'right-click' ? 'default' : 'outline'}
+              aria-pressed={lastAction === 'right-click'}
               data-testid="btn-right-click"
               onContextMenu={(event) => {
                 event.preventDefault();

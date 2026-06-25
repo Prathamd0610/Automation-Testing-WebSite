@@ -1,5 +1,5 @@
 import { Suspense, lazy, type ComponentType } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { AdminRoute } from '@/components/auth/AdminRoute';
@@ -9,6 +9,8 @@ const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const LoginPage = lazy(() => import('@/pages/LoginPage'));
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
+const CatalogPage = lazy(() => import('@/pages/CatalogPage'));
+const CategoryPage = lazy(() => import('@/pages/CategoryPage'));
 
 // Modules
 const InputsPage = lazy(() => import('@/pages/modules/InputsPage'));
@@ -86,11 +88,13 @@ export function AppRouter() {
       <Route element={<AppLayout />}>
         <Route index element={lazyElement(DashboardPage)} />
 
-        {/* Section landing paths have no page of their own — redirect to the
-            dashboard (the module / challenge / workflow catalog) instead of 404. */}
-        <Route path="modules" element={<Navigate to="/" replace />} />
-        <Route path="challenges" element={<Navigate to="/" replace />} />
-        <Route path="workflows" element={<Navigate to="/" replace />} />
+        {/* Section catalogs list the categories you can drill into. */}
+        <Route path="modules" element={lazyElement(CatalogPage)} />
+        <Route path="challenges" element={lazyElement(CatalogPage)} />
+        <Route path="workflows" element={lazyElement(CatalogPage)} />
+
+        {/* Category landing pages — pick a module within a category. */}
+        <Route path="category/:slug" element={lazyElement(CategoryPage)} />
 
         <Route path="modules/inputs" element={lazyElement(InputsPage)} />
         <Route path="modules/buttons" element={lazyElement(ButtonsPage)} />

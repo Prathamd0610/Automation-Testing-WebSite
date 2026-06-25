@@ -9,13 +9,14 @@ import { AppRouter } from '@/routes/AppRouter';
 import { store } from '@/store';
 import { useAppDispatch } from '@/store/hooks';
 import { fetchMe } from '@/store/authSlice';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme, useUiMode } from '@/hooks/useTheme';
 import { queryClient } from '@/services/queryClient';
 
 /** Hydrates the session once and keeps the theme class in sync with the store. */
 function AppBootstrap() {
   const dispatch = useAppDispatch();
   useTheme();
+  useUiMode();
 
   useEffect(() => {
     void dispatch(fetchMe());

@@ -4,10 +4,13 @@ import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { Footer } from './Footer';
 import { Breadcrumbs } from './Breadcrumbs';
+import { ModernLayout } from './ModernLayout';
+import { useAppSelector } from '@/store/hooks';
 
 export function AppLayout() {
   const location = useLocation();
   const mainRef = useRef<HTMLElement>(null);
+  const uiMode = useAppSelector((state) => state.ui.uiMode);
 
   // Global "/" shortcut focuses search; handled here so it works on every page.
   useEffect(() => {
@@ -30,6 +33,12 @@ export function AppLayout() {
   useEffect(() => {
     mainRef.current?.scrollTo({ top: 0, left: 0 });
   }, [location.pathname]);
+
+  // The modern skin uses a completely different shell (floating top nav,
+  // immersive full-width canvas) instead of the classic sidebar + topbar.
+  if (uiMode === 'modern') {
+    return <ModernLayout />;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">

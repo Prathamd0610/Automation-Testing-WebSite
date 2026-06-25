@@ -72,6 +72,7 @@ const config: Config = {
       },
       boxShadow: {
         apple: '0 4px 24px -8px rgba(0, 122, 255, 0.25)',
+        'apple-lg': '0 18px 48px -16px rgba(99, 102, 241, 0.35)',
         card: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
       },
       keyframes: {
@@ -87,11 +88,27 @@ const config: Config = {
           from: { opacity: '0', transform: 'translateY(8px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
+        'aurora-drift': {
+          '0%, 100%': { transform: 'translate3d(0, 0, 0) scale(1)' },
+          '33%': { transform: 'translate3d(4%, -6%, 0) scale(1.08)' },
+          '66%': { transform: 'translate3d(-5%, 4%, 0) scale(0.96)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fade-in 0.3s ease-out',
+        'aurora-drift': 'aurora-drift 18s ease-in-out infinite',
+        float: 'float 6s ease-in-out infinite',
+        shimmer: 'shimmer 6s linear infinite',
       },
     },
   },

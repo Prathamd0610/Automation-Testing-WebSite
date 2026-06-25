@@ -3,9 +3,14 @@ import { Search, FlaskConical, Layers, Boxes, Workflow } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ModuleCard } from '@/components/common/ModuleCard';
+import { CategoryCard } from '@/components/common/CategoryCard';
 import { AdSlot } from '@/components/common/AdSlot';
+import { ScrollReveal } from '@/components/common/ScrollReveal';
+import { Parallax } from '@/components/common/Parallax';
+import { ModernDashboard } from '@/pages/ModernDashboard';
 import { MODULES, MODULE_CATEGORIES, searchModules } from '@/config/modules';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useAppSelector } from '@/store/hooks';
 
 const STATS = [
   { label: 'Practice modules', value: MODULES.length, icon: Boxes },
@@ -23,41 +28,44 @@ const STATS = [
 ];
 
 export default function DashboardPage() {
+  const uiMode = useAppSelector((state) => state.ui.uiMode);
   const [query, setQuery] = useState('');
   const debounced = useDebounce(query, 200);
   const results = useMemo(() => searchModules(debounced), [debounced]);
-  const grouped = useMemo(
-    () =>
-      MODULE_CATEGORIES.map((category) => ({
-        category,
-        modules: results.filter((m) => m.category === category),
-      })).filter((group) => group.modules.length > 0),
-    [results],
-  );
+
+  if (uiMode === 'modern') {
+    return <ModernDashboard />;
+  }
 
   return (
     <div className="space-y-10">
       <section className="overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/10 via-background to-background p-8">
-        <Badge variant="secondary" className="mb-4">
-          MERN · TypeScript · WCAG 2.1 AA
-        </Badge>
-        <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          Practice UI &amp; API automation in one safe, realistic sandbox.
-        </h1>
-        <p className="mt-3 max-w-2xl text-muted-foreground">
-          Every control ships with stable <code className="rounded bg-muted px-1.5 py-0.5 text-xs">data-testid</code>{' '}
-          hooks and accessible semantics — perfect for Selenium, Cypress and Playwright.
-        </p>
+        <Parallax offset={40}>
+          <Badge variant="secondary" className="mb-4">
+            MERN · TypeScript · WCAG 2.1 AA
+          </Badge>
+          <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Practice <span className="text-gradient-brand">UI &amp; API automation</span> in one safe,
+            realistic sandbox.
+          </h1>
+          <p className="mt-3 max-w-2xl text-muted-foreground">
+            Every control ships with stable{' '}
+            <code className="rounded bg-muted px-1.5 py-0.5 text-xs">data-testid</code> hooks and
+            accessible semantics — perfect for Selenium, Cypress and Playwright.
+          </p>
+        </Parallax>
 
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {STATS.map(({ label, value, icon: Icon }) => (
-            <div key={label} className="rounded-xl border bg-card/70 p-4">
-              <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
-              <p className="mt-2 text-2xl font-bold text-foreground" data-testid={`stat-${label}`}>
-                {value}
-              </p>
-              <p className="text-xs text-muted-foreground">{label}</p>
-            </div>
+          {STATS.map(({ label, value, icon: Icon }, index) => (
+            <ScrollReveal key={label} delay={index * 0.08}>
+              <div className="rounded-xl border bg-card/70 p-4 transition-transform hover:-translate-y-0.5">
+                <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
+                <p className="mt-2 text-2xl font-bold text-foreground" data-testid={`stat-${label}`}>
+                  {value}
+                </p>
+                <p className="text-xs text-muted-foreground">{label}</p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </section>
@@ -78,21 +86,27 @@ export default function DashboardPage() {
         />
       </div>
 
-      {grouped.length === 0 ? (
-        <p className="rounded-lg border border-dashed py-12 text-center text-sm text-muted-foreground">
-          No modules match “{debounced}”.
-        </p>
+      {debounced.trim() ? (
+        results.length === 0 ? (
+          <p className="rounded-lg border border-dashed py-12 text-center text-sm text-muted-foreground">
+            No modules match “{debounced}”.
+          </p>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="dashboard-results">
+            {results.map((module) => (
+              <ModuleCard key={module.id} module={module} />
+            ))}
+          </div>
+        )
       ) : (
-        grouped.map(({ category, modules }) => (
-          <section key={category} className="space-y-4">
-            <h2 className="text-lg font-semibold tracking-tight text-foreground">{category}</h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {modules.map((module) => (
-                <ModuleCard key={module.id} module={module} />
-              ))}
-            </div>
-          </section>
-        ))
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">Browse by category</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {MODULE_CATEGORIES.map((category) => (
+              <CategoryCard key={category} category={category} />
+            ))}
+          </div>
+        </section>
       )}
 
       <AdSlot slot="1111111111" testId="ad-dashboard-bottom" />

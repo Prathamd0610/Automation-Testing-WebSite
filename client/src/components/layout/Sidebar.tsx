@@ -11,10 +11,11 @@ import {
   Megaphone,
   MessageSquarePlus,
 } from 'lucide-react';
-import { MODULE_CATEGORIES, getModulesByCategory } from '@/config/modules';
+import { MODULE_CATEGORIES, getModulesByCategory, categorySlug } from '@/config/modules';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useAuth } from '@/hooks/useAuth';
 import { setSidebar } from '@/store/uiSlice';
+import { UiModeToggle } from '@/components/common/UiModeToggle';
 import { cn } from '@/lib/utils';
 
 function NavItem({
@@ -107,6 +108,12 @@ export function Sidebar() {
         </div>
 
         <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4" data-testid="sidebar-nav">
+          {/* UI skin toggle (phones only — shown in the topbar on larger screens) */}
+          <div className="flex items-center justify-between rounded-lg border px-3 py-2 sm:hidden">
+            <span className="text-sm font-medium text-foreground">Interface</span>
+            <UiModeToggle />
+          </div>
+
           <div className="space-y-1">
             <NavItem to="/" label="Dashboard" icon={LayoutDashboard} testId="nav-dashboard" end />
           </div>
@@ -134,9 +141,21 @@ export function Sidebar() {
             if (modules.length === 0) return null;
             return (
               <div key={category} className="space-y-1">
-                <p className="px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+                <NavLink
+                  to={`/category/${categorySlug(category)}`}
+                  data-testid={`nav-category-${categorySlug(category)}`}
+                  onClick={() => dispatch(setSidebar(false))}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center justify-between rounded-md px-3 py-1 text-xs font-semibold uppercase tracking-wider transition-colors',
+                      isActive
+                        ? 'text-primary'
+                        : 'text-muted-foreground/70 hover:text-foreground',
+                    )
+                  }
+                >
                   {category}
-                </p>
+                </NavLink>
                 {modules.map((module) => (
                   <NavItem
                     key={module.id}

@@ -16,6 +16,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/hooks/useAuth';
 import { CommandPalette } from './CommandPalette';
 import { FeedbackDialog } from '@/components/common/FeedbackDialog';
+import { UiModeToggle } from '@/components/common/UiModeToggle';
 
 export function Topbar() {
   const dispatch = useAppDispatch();
@@ -65,6 +66,8 @@ export function Topbar() {
         >
           {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </Button>
+
+        <UiModeToggle className="hidden sm:inline-flex" />
 
         <Button
           variant="ghost"

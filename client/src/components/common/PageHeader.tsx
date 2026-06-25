@@ -16,7 +16,7 @@ export function PageHeader({ title, description, icon, actions, className }: Pag
         {icon ? (
           <span
             aria-hidden="true"
-            className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
+            className="brand-icon mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
           >
             {icon}
           </span>

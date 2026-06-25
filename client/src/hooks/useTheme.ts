@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setTheme } from '@/store/uiSlice';
+import { setTheme, setUiMode } from '@/store/uiSlice';
 
 /** Applies the active theme to the document root and exposes a toggle. */
 export function useTheme() {
@@ -16,4 +16,18 @@ export function useTheme() {
   const toggleTheme = () => dispatch(setTheme(theme === 'dark' ? 'light' : 'dark'));
 
   return { theme, toggleTheme };
+}
+
+/** Applies the active UI skin (classic / modern) to the document root. */
+export function useUiMode() {
+  const dispatch = useAppDispatch();
+  const uiMode = useAppSelector((state) => state.ui.uiMode);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('ui-modern', uiMode === 'modern');
+  }, [uiMode]);
+
+  const toggleUiMode = () => dispatch(setUiMode(uiMode === 'modern' ? 'classic' : 'modern'));
+
+  return { uiMode, toggleUiMode };
 }

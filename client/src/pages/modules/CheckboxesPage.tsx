@@ -47,25 +47,6 @@ export default function CheckboxesPage() {
         description="Single checkboxes, gated submits and a master checkbox with an indeterminate state."
       />
 
-      <Section title="Terms & submission" id="terms" description="The submit button stays disabled until the terms are accepted.">
-        <Card>
-          <CardContent className="space-y-4 pt-6">
-            <div className="flex items-center gap-3">
-              <Checkbox
-                id="checkbox-terms"
-                data-testid="checkbox-terms"
-                checked={termsAccepted}
-                onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-              />
-              <Label htmlFor="checkbox-terms">I accept the terms and conditions</Label>
-            </div>
-            <Button type="button" data-testid="checkbox-submit" disabled={!termsAccepted} onClick={handleSubmit}>
-              Submit
-            </Button>
-          </CardContent>
-        </Card>
-      </Section>
-
       <Section title="Hobby group" id="hobbies" description="The master checkbox reflects partial selection as indeterminate.">
         <Card>
           <CardContent className="space-y-4 pt-6">
@@ -97,6 +78,25 @@ export default function CheckboxesPage() {
               })}
             </div>
             <ResultPanel label="Selection state" value={resultValue} testId="checkbox-result" tone="success" />
+          </CardContent>
+        </Card>
+      </Section>
+
+      <Section title="Terms & submission" id="terms" description="The submit button stays disabled until the terms are accepted.">
+        <Card>
+          <CardContent className="space-y-4 pt-6">
+            <div className="flex items-center gap-3">
+              <Checkbox
+                id="checkbox-terms"
+                data-testid="checkbox-terms"
+                checked={termsAccepted}
+                onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+              />
+              <Label htmlFor="checkbox-terms">I accept the terms and conditions</Label>
+            </div>
+            <Button type="button" data-testid="checkbox-submit" disabled={!termsAccepted} onClick={handleSubmit}>
+              Submit
+            </Button>
           </CardContent>
         </Card>
       </Section>
