@@ -21,6 +21,14 @@ function initialTheme(): Theme {
 
 function initialUiMode(): UiMode {
   try {
+    // One-time migration: older builds could persist "modern" as the active
+    // skin. Reset persisted state once so the app reliably opens in classic by
+    // default. Explicit toggles after this still persist normally.
+    if (localStorage.getItem('atp_ui_mode_reset') !== '1') {
+      localStorage.removeItem('atp_ui_mode');
+      localStorage.setItem('atp_ui_mode_reset', '1');
+      return 'classic';
+    }
     const stored = localStorage.getItem('atp_ui_mode');
     if (stored === 'classic' || stored === 'modern') return stored;
   } catch {
