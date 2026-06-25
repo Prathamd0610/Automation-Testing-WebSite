@@ -57,6 +57,7 @@ const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage')
 const AdminUsersPage = lazy(() => import('@/pages/admin/AdminUsersPage'));
 const AdminAccountsPage = lazy(() => import('@/pages/admin/AdminAccountsPage'));
 const AdminProductsPage = lazy(() => import('@/pages/admin/AdminProductsPage'));
+const AdminFeedbackPage = lazy(() => import('@/pages/admin/AdminFeedbackPage'));
 const AdminAuditLogPage = lazy(() => import('@/pages/admin/AdminAuditLogPage'));
 const AdminNotificationsPage = lazy(() => import('@/pages/admin/AdminNotificationsPage'));
 
@@ -137,6 +138,7 @@ export function AppRouter() {
             <Route path="users" element={lazyElement(AdminUsersPage)} />
             <Route path="accounts" element={lazyElement(AdminAccountsPage)} />
             <Route path="products" element={lazyElement(AdminProductsPage)} />
+            <Route path="feedback" element={lazyElement(AdminFeedbackPage)} />
             <Route path="audit" element={lazyElement(AdminAuditLogPage)} />
             <Route path="notifications" element={lazyElement(AdminNotificationsPage)} />
           </Route>

@@ -9,6 +9,7 @@ import {
   Package,
   ScrollText,
   Megaphone,
+  MessageSquarePlus,
 } from 'lucide-react';
 import { MODULE_CATEGORIES, getModulesByCategory } from '@/config/modules';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -57,6 +58,7 @@ const ADMIN_ITEMS = [
   { id: 'admin-users', to: '/admin/users', label: 'Users & Roles', icon: Users },
   { id: 'admin-accounts', to: '/admin/accounts', label: 'Accounts', icon: Wallet },
   { id: 'admin-products', to: '/admin/products', label: 'Products', icon: Package },
+  { id: 'admin-feedback', to: '/admin/feedback', label: 'Feedback', icon: MessageSquarePlus },
   { id: 'admin-audit', to: '/admin/audit', label: 'Audit Log', icon: ScrollText },
   { id: 'admin-notifications', to: '/admin/notifications', label: 'Broadcast', icon: Megaphone },
 ];

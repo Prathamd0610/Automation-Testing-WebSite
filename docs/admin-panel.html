@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Panel — User Guide | Automation Testing Practice Platform</title>
+    <style>
+      :root {
+        --blue: #007aff;
+        --blue-dark: #0058c8;
+        --ink: #1d1d1f;
+        --muted: #6e6e73;
+        --line: #e5e5ea;
+        --bg-soft: #f5f5f7;
+        --green: #34c759;
+        --red: #ff3b30;
+        --amber: #ff9500;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--ink);
+        line-height: 1.55;
+        font-size: 14px;
+        background: #fff;
+      }
+      .page { max-width: 880px; margin: 0 auto; padding: 48px 40px; }
+      header.cover {
+        background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+        color: #fff;
+        border-radius: 18px;
+        padding: 44px 40px;
+        margin-bottom: 36px;
+      }
+      header.cover .badge {
+        display: inline-block; font-size: 12px; letter-spacing: .08em;
+        text-transform: uppercase; background: rgba(255,255,255,.18);
+        padding: 5px 12px; border-radius: 999px; margin-bottom: 16px;
+      }
+      header.cover h1 { margin: 0 0 8px; font-size: 32px; letter-spacing: -.02em; }
+      header.cover p { margin: 0; opacity: .92; font-size: 15px; }
+      h2 {
+        font-size: 22px; letter-spacing: -.01em; margin: 40px 0 6px;
+        padding-bottom: 8px; border-bottom: 2px solid var(--line);
+      }
+      h3 { font-size: 16px; margin: 22px 0 6px; }
+      p { margin: 8px 0; }
+      .muted { color: var(--muted); }
+      ul, ol { margin: 8px 0 8px 22px; padding: 0; }
+      li { margin: 4px 0; }
+      code {
+        background: var(--bg-soft); border: 1px solid var(--line);
+        border-radius: 5px; padding: 1px 6px; font-size: 12.5px;
+        font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+      }
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .card {
+        border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+        background: #fff;
+      }
+      .note {
+        border-left: 4px solid var(--blue); background: #f0f7ff;
+        padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 14px 0;
+      }
+      .warn {
+        border-left: 4px solid var(--amber); background: #fff8ef;
+        padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 14px 0;
+      }
+      table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+      th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      th { background: var(--bg-soft); font-weight: 600; }
+      .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+      .pill.green { background: #e7f9ec; color: #1c8c3b; }
+      .pill.red { background: #ffeceb; color: #c1271d; }
+      .pill.grey { background: #eef0f2; color: #5b6168; }
+      .pill.blue { background: #e8f1ff; color: var(--blue-dark); }
+
+      /* Wireframe mockups */
+      .mock { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 14px 0; }
+      .mock .bar {
+        background: var(--bg-soft); border-bottom: 1px solid var(--line);
+        padding: 8px 12px; font-size: 12px; color: var(--muted);
+        display: flex; align-items: center; gap: 8px;
+      }
+      .mock .bar .dot { width: 9px; height: 9px; border-radius: 50%; background: #d2d2d7; }
+      .mock .tabs { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+      .mock .tab { font-size: 11.5px; padding: 4px 10px; border-radius: 7px; background: #fff; border: 1px solid var(--line); color: var(--muted); }
+      .mock .tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+      .mock .body { padding: 14px; }
+      .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .stat {
+        border: 1px solid var(--line); border-radius: 9px; padding: 10px;
+        font-size: 11px; color: var(--muted);
+      }
+      .stat b { display: block; font-size: 18px; color: var(--ink); margin-top: 2px; }
+      .mtable { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+      .mtable th, .mtable td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+      .mbtn { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--line); color: var(--muted); }
+      .mbtn.solid { background: var(--blue); color: #fff; border-color: var(--blue); }
+      .toggle { width: 30px; height: 17px; border-radius: 999px; background: var(--green); position: relative; display: inline-block; }
+      .toggle::after { content: ""; position: absolute; top: 2px; right: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; }
+      .toggle.off { background: #c7c7cc; }
+      .toggle.off::after { right: auto; left: 2px; }
+      .sel { font-size: 11px; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; display: inline-block; min-width: 64px; }
+
+      .steps { counter-reset: s; list-style: none; margin-left: 0; }
+      .steps li { counter-increment: s; position: relative; padding-left: 30px; margin: 8px 0; }
+      .steps li::before {
+        content: counter(s); position: absolute; left: 0; top: 0;
+        width: 21px; height: 21px; background: var(--blue); color: #fff;
+        border-radius: 50%; font-size: 12px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+      }
+      footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+      .print-tip {
+        background: #fffbe6; border: 1px dashed #e6c200; border-radius: 10px;
+        padding: 12px 16px; margin: 0 0 28px; font-size: 13px;
+      }
+      @media print {
+        .print-tip { display: none; }
+        .page { padding: 0; max-width: none; }
+        h2 { break-after: avoid; }
+        .mock, table, .card, .note, .warn { break-inside: avoid; }
+        section { break-inside: avoid-page; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="print-tip">
+        📄 <strong>Save as PDF:</strong> Press <code>Ctrl</code>+<code>P</code> (or <code>⌘</code>+<code>P</code>) →
+        Destination <strong>“Save as PDF”</strong> → enable <em>Background graphics</em> → Save.
+      </div>
+
+      <header class="cover">
+        <span class="badge">Administrator Guide</span>
+        <h1>Admin Panel — User Guide</h1>
+        <p>Automation Testing Practice Platform · Manage users, roles, account balances, products, audit history, and broadcasts.</p>
+      </header>
+
+      <!-- OVERVIEW -->
+      <section>
+        <h2>1. Overview</h2>
+        <p>
+          The Admin Panel is a dedicated, role-protected area for platform administrators. It is only
+          visible and accessible to users with the <strong>admin</strong> role. It centralizes six tools:
+        </p>
+        <div class="grid2">
+          <div class="card"><strong>📊 Dashboard</strong><br /><span class="muted">Live counts of users, catalog, business records, and total balances.</span></div>
+          <div class="card"><strong>👥 Users &amp; Roles</strong><br /><span class="muted">Create users, switch roles, activate/deactivate, reset passwords, revoke sessions, delete.</span></div>
+          <div class="card"><strong>💳 Accounts</strong><br /><span class="muted">View every user's checking/savings and credit or debit their balances.</span></div>
+          <div class="card"><strong>📦 Products</strong><br /><span class="muted">Create, edit, and remove catalog products.</span></div>
+          <div class="card"><strong>📜 Audit Log</strong><br /><span class="muted">A record of every sensitive admin action.</span></div>
+          <div class="card"><strong>📣 Broadcast</strong><br /><span class="muted">Send a notification to all users in real time.</span></div>
+        </div>
+      </section>
+
+      <!-- ACCESS -->
+      <section>
+        <h2>2. Accessing the panel</h2>
+        <ol class="steps">
+          <li>Open the site and <strong>sign in</strong> with an administrator account.</li>
+          <li>An <strong>“Admin Panel”</strong> section appears in the left sidebar (only admins see it).</li>
+          <li>Click any item — or go directly to <code>/admin</code>.</li>
+        </ol>
+        <div class="note">
+          <strong>Demo administrator:</strong> <code>admin@practice.dev</code> / <code>Admin123!</code><br />
+          <span class="muted">Standard demo user (non-admin): <code>user@practice.dev</code> / <code>User1234!</code></span>
+        </div>
+        <p class="muted">
+          Non-admins never see the Admin nav, and visiting <code>/admin</code> directly redirects them to the dashboard.
+        </p>
+      </section>
+
+      <!-- DASHBOARD -->
+      <section>
+        <h2>3. Dashboard</h2>
+        <div class="mock">
+          <div class="bar"><span class="dot"></span> Admin Panel · Dashboard</div>
+          <div class="tabs">
+            <span class="tab active">Dashboard</span><span class="tab">Users &amp; Roles</span>
+            <span class="tab">Accounts</span><span class="tab">Products</span>
+            <span class="tab">Audit Log</span><span class="tab">Broadcast</span>
+          </div>
+          <div class="body">
+            <div class="stat-row">
+              <div class="stat">Total users<b>42</b></div>
+              <div class="stat">Active<b>39</b></div>
+              <div class="stat">Admins<b>3</b></div>
+              <div class="stat">New (7 days)<b>5</b></div>
+            </div>
+            <div style="height:8px"></div>
+            <div class="stat-row">
+              <div class="stat">Products<b>60</b></div>
+              <div class="stat">Orders<b>50</b></div>
+              <div class="stat">Total checking<b>$182k</b></div>
+              <div class="stat">Total savings<b>$910k</b></div>
+            </div>
+          </div>
+        </div>
+        <p>The dashboard is read-only. It gives an at-a-glance health view grouped into <strong>Users</strong>,
+        <strong>Catalog &amp; business</strong>, and <strong>Accounts</strong> (aggregate balances across all users).</p>
+      </section>
+
+      <!-- USERS -->
+      <section>
+        <h2>4. Users &amp; Roles</h2>
+        <div class="mock">
+          <div class="bar"><span class="dot"></span> Admin Panel · Users &amp; Roles</div>
+          <div class="body">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+              <span class="sel">🔍 Search by name or email</span>
+              <span class="mbtn solid">+ Add user</span>
+            </div>
+            <table class="mtable">
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Active</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Platform Admin <span class="pill blue">You</span></td><td>admin@practice.dev</td>
+                  <td><span class="sel">admin ▾</span></td><td><span class="toggle"></span></td>
+                  <td style="text-align:right"><span class="mbtn">🔑</span> <span class="mbtn">⎋</span> <span class="mbtn">🗑</span></td>
+                </tr>
+                <tr>
+                  <td>Demo Tester</td><td>user@practice.dev</td>
+                  <td><span class="sel">user ▾</span></td><td><span class="toggle"></span></td>
+                  <td style="text-align:right"><span class="mbtn">🔑</span> <span class="mbtn">⎋</span> <span class="mbtn">🗑</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3>What you can do</h3>
+        <table>
+          <thead><tr><th>Action</th><th>How</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Change role</strong></td><td>Use the <em>Role</em> dropdown on a row and pick <code>user</code> or <code>admin</code>.</td><td>Instantly promotes/demotes that user.</td></tr>
+            <tr><td><strong>Activate / deactivate</strong></td><td>Flip the <em>Active</em> switch.</td><td>Deactivated users can't sign in.</td></tr>
+            <tr><td><strong>Reset password</strong> 🔑</td><td>Click the key icon, type a new password (min 8 chars).</td><td>Sets a new password immediately.</td></tr>
+            <tr><td><strong>Revoke sessions</strong> ⎋</td><td>Click the logout icon.</td><td>Forces that user to sign in again everywhere.</td></tr>
+            <tr><td><strong>Delete</strong> 🗑</td><td>Click the trash icon and confirm.</td><td>Removes the user and their bank account.</td></tr>
+            <tr><td><strong>Add user</strong></td><td>Click <em>Add user</em>, fill name/email/role/password.</td><td>Creates a new account.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="warn">
+          <strong>Self-protection (built in):</strong> You <em>cannot</em> change your own role, deactivate, or delete
+          your own admin account. Those controls are disabled on your own row (marked <span class="pill blue">You</span>),
+          and the server rejects the action even if attempted directly. This prevents an admin from accidentally
+          locking themselves out.
+        </div>
+      </section>
+
+      <!-- ACCOUNTS -->
+      <section>
+        <h2>5. Accounts &amp; Savings</h2>
+        <div class="mock">
+          <div class="bar"><span class="dot"></span> Admin Panel · Accounts</div>
+          <div class="body">
+            <table class="mtable">
+              <thead><tr><th>User</th><th>Email</th><th style="text-align:right">Checking</th><th style="text-align:right">Savings</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody>
+                <tr><td>Demo Tester</td><td>user@practice.dev</td><td style="text-align:right">$5,200.75</td><td style="text-align:right">$18,230.40</td><td style="text-align:right"><span class="mbtn solid">💳 Adjust</span></td></tr>
+                <tr><td>Platform Admin</td><td>admin@practice.dev</td><td style="text-align:right">$12,000.00</td><td style="text-align:right">$48,000.00</td><td style="text-align:right"><span class="mbtn solid">💳 Adjust</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <h3>Adjusting a balance</h3>
+        <ol class="steps">
+          <li>Click <strong>Adjust</strong> on a user's row.</li>
+          <li>Choose the account — <strong>Checking</strong> or <strong>Savings</strong>.</li>
+          <li>Choose <strong>Credit (add)</strong> or <strong>Debit (remove)</strong>.</li>
+          <li>Enter an <strong>amount</strong> and an optional description (e.g. “Quarterly bonus”).</li>
+          <li>Click <strong>Apply adjustment</strong>.</li>
+        </ol>
+        <div class="note">
+          Every adjustment writes a <strong>transaction record</strong> and an <strong>audit entry</strong>.
+          The change appears immediately on the user's own <strong>Banking</strong> page.
+          A <strong>debit cannot overdraw</strong> a balance — the server returns an error if the amount exceeds the funds.
+        </div>
+      </section>
+
+      <!-- PRODUCTS -->
+      <section>
+        <h2>6. Products</h2>
+        <div class="mock">
+          <div class="bar"><span class="dot"></span> Admin Panel · Products</div>
+          <div class="body">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+              <span class="sel">🔍 Search products</span><span class="mbtn solid">+ Add product</span>
+            </div>
+            <table class="mtable">
+              <thead><tr><th>Name</th><th>SKU</th><th>Category</th><th style="text-align:right">Price</th><th style="text-align:right">Stock</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody>
+                <tr><td>Wireless Mouse</td><td>WM-001</td><td>Electronics</td><td style="text-align:right">$24.99</td><td style="text-align:right">120</td><td><span class="pill green">active</span></td><td style="text-align:right"><span class="mbtn">✏️</span> <span class="mbtn">🗑</span></td></tr>
+                <tr><td>Desk Lamp</td><td>DL-114</td><td>Home</td><td style="text-align:right">$39.00</td><td style="text-align:right">0</td><td><span class="pill grey">inactive</span></td><td style="text-align:right"><span class="mbtn">✏️</span> <span class="mbtn">🗑</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p>Use <strong>Add product</strong> or the ✏️ edit icon to set <em>name, SKU, category, price, stock</em>, and an
+        <strong>Active</strong> toggle (controls store visibility). The 🗑 icon deletes after confirmation. Changes are
+        reflected across the store immediately.</p>
+      </section>
+
+      <!-- AUDIT -->
+      <section>
+        <h2>7. Audit Log</h2>
+        <div class="mock">
+          <div class="bar"><span class="dot"></span> Admin Panel · Audit Log</div>
+          <div class="body">
+            <table class="mtable">
+              <thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Entity</th><th>Details</th></tr></thead>
+              <tbody>
+                <tr><td>10:24</td><td>admin@practice.dev</td><td><span class="pill blue">user.role.update</span></td><td>User</td><td>from: user, to: admin</td></tr>
+                <tr><td>10:21</td><td>admin@practice.dev</td><td><span class="pill blue">account.adjust</span></td><td>Account</td><td>savings, credit, 500</td></tr>
+                <tr><td>10:18</td><td>admin@practice.dev</td><td><span class="pill blue">user.delete</span></td><td>User</td><td>email: spam@x.io</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p>The audit log automatically records sensitive actions — role changes, balance adjustments, deletions,
+        password resets, session revokes, and broadcasts — with <strong>who</strong>, <strong>what</strong>,
+        <strong>when</strong>, and contextual details. Entries are retained for 90 days.</p>
+      </section>
+
+      <!-- BROADCAST -->
+      <section>
+        <h2>8. Broadcast notification</h2>
+        <div class="mock">
+          <div class="bar"><span class="dot"></span> Admin Panel · Broadcast</div>
+          <div class="body" style="max-width:420px">
+            <div class="muted" style="font-size:11px">Title</div>
+            <div class="sel" style="display:block;margin:3px 0 8px">Scheduled maintenance tonight</div>
+            <div class="muted" style="font-size:11px">Message</div>
+            <div class="sel" style="display:block;height:46px;margin:3px 0 8px">We'll be upgrading the platform at 9 PM UTC…</div>
+            <div class="muted" style="font-size:11px">Type</div>
+            <div class="sel" style="display:block;margin:3px 0 10px;width:120px">Warning ▾</div>
+            <span class="mbtn solid">📣 Send broadcast</span>
+          </div>
+        </div>
+        <ol class="steps">
+          <li>Enter a <strong>title</strong> and <strong>message</strong>.</li>
+          <li>Pick a <strong>type</strong>: Info, Success, Warning, or Error.</li>
+          <li>Click <strong>Send broadcast</strong> — it is delivered to every user and appears in their notification feed in real time.</li>
+        </ol>
+      </section>
+
+      <!-- SECURITY -->
+      <section>
+        <h2>9. Security model</h2>
+        <ul>
+          <li><strong>Role-gated everywhere:</strong> all admin endpoints require a valid login <em>and</em> the admin role (server-enforced).</li>
+          <li><strong>Hidden from non-admins:</strong> the nav is conditional, and admin routes redirect non-admins away.</li>
+          <li><strong>Self-protection is server-authoritative:</strong> the UI disables self-actions, and the API independently blocks them (HTTP 403).</li>
+          <li><strong>Validated input:</strong> all requests are schema-validated; debits can't overdraw balances.</li>
+          <li><strong>Auditable:</strong> sensitive actions are logged with actor, IP, and details.</li>
+        </ul>
+      </section>
+
+      <!-- API REFERENCE -->
+      <section>
+        <h2>10. API reference (for testers)</h2>
+        <p class="muted">All routes are prefixed with <code>/api</code> and require an admin bearer token / session.</p>
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill blue">GET</span></td><td><code>/admin/stats</code></td><td>Dashboard counts</td></tr>
+            <tr><td><span class="pill blue">GET</span></td><td><code>/admin/users</code></td><td>List/search users</td></tr>
+            <tr><td><span class="pill green">POST</span></td><td><code>/admin/users</code></td><td>Create user</td></tr>
+            <tr><td><span class="pill grey">PATCH</span></td><td><code>/admin/users/:id/role</code></td><td>Change role (self blocked)</td></tr>
+            <tr><td><span class="pill grey">PATCH</span></td><td><code>/admin/users/:id/active</code></td><td>Activate/deactivate (self blocked)</td></tr>
+            <tr><td><span class="pill green">POST</span></td><td><code>/admin/users/:id/reset-password</code></td><td>Reset password</td></tr>
+            <tr><td><span class="pill green">POST</span></td><td><code>/admin/users/:id/revoke-sessions</code></td><td>Force re-login</td></tr>
+            <tr><td><span class="pill red">DELETE</span></td><td><code>/admin/users/:id</code></td><td>Delete user (self blocked)</td></tr>
+            <tr><td><span class="pill blue">GET</span></td><td><code>/admin/accounts</code></td><td>List balances</td></tr>
+            <tr><td><span class="pill green">POST</span></td><td><code>/admin/users/:id/account/adjust</code></td><td>Credit/debit balance</td></tr>
+            <tr><td><span class="pill blue">GET</span></td><td><code>/admin/transactions</code></td><td>Transaction history</td></tr>
+            <tr><td><span class="pill blue">GET</span></td><td><code>/admin/audit-logs</code></td><td>Audit entries</td></tr>
+            <tr><td><span class="pill green">POST</span></td><td><code>/admin/notifications/broadcast</code></td><td>Broadcast to all users</td></tr>
+          </tbody>
+        </table>
+        <p class="muted">User-facing (any signed-in user): <code>GET /api/account</code>, <code>GET /api/account/transactions</code>,
+        <code>POST /api/account/transfer</code> — power the Banking page.</p>
+      </section>
+
+      <footer>
+        Automation Testing Practice Platform — Admin Panel User Guide ·
+        Generated for administrator reference. Save this page as a PDF via your browser's Print dialog.
+      </footer>
+    </div>
+  </body>
+</html>

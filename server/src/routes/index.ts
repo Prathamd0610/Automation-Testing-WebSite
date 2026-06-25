@@ -7,6 +7,7 @@ import notificationRoutes from './notificationRoutes';
 import testDataRoutes from './testDataRoutes';
 import adminRoutes from './adminRoutes';
 import accountRoutes from './accountRoutes';
+import feedbackRoutes from './feedbackRoutes';
 import { buildCrudRouter } from './buildCrudRouter';
 import { createCrudController } from '../controllers/crudControllerFactory';
 import { authenticate, authorize } from '../middleware/auth';
@@ -43,6 +44,7 @@ router.use('/playground', playgroundRoutes);
 router.use('/admin/test-data', testDataRoutes);
 router.use('/admin', adminRoutes);
 router.use('/account', accountRoutes);
+router.use('/feedback', feedbackRoutes);
 
 // ── Public practice CRUD resources (writes are sandboxed + rate-limited) ──────
 router.use(

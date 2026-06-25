@@ -67,3 +67,29 @@ export interface BroadcastPayload {
   message: string;
   type: 'info' | 'success' | 'warning' | 'error';
 }
+
+export type FeedbackType = 'comment' | 'feature' | 'bug' | 'other';
+export type FeedbackPriority = 'low' | 'medium' | 'high';
+export type FeedbackStatus = 'open' | 'in_review' | 'resolved';
+
+export interface Feedback {
+  id: string;
+  name: string;
+  email: string;
+  type: FeedbackType;
+  subject: string;
+  message: string;
+  priority: FeedbackPriority;
+  status: FeedbackStatus;
+  pageUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateFeedbackPayload {
+  type: FeedbackType;
+  subject: string;
+  message: string;
+  priority: FeedbackPriority;
+  pageUrl?: string;
+}

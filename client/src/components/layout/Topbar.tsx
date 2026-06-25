@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, Moon, Sun, Search, LogOut, User as UserIcon, Github } from 'lucide-react';
+import { Menu, Moon, Sun, Search, LogOut, User as UserIcon, MessageSquarePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -15,6 +15,7 @@ import { toggleSidebar } from '@/store/uiSlice';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/hooks/useAuth';
 import { CommandPalette } from './CommandPalette';
+import { FeedbackDialog } from '@/components/common/FeedbackDialog';
 
 export function Topbar() {
   const dispatch = useAppDispatch();
@@ -22,6 +23,7 @@ export function Topbar() {
   const { theme, toggleTheme } = useTheme();
   const { user, isAuthenticated, signOut } = useAuth();
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut().catch(() => undefined);
@@ -64,10 +66,16 @@ export function Topbar() {
           {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </Button>
 
-        <Button variant="ghost" size="icon" asChild aria-label="View source on GitHub">
-          <a href="https://github.com" target="_blank" rel="noreferrer noopener">
-            <Github className="h-5 w-5" />
-          </a>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setFeedbackOpen(true)}
+          aria-label="Share feedback"
+          data-testid="open-feedback"
+          className="gap-1.5"
+        >
+          <MessageSquarePlus className="h-5 w-5" />
+          <span className="hidden sm:inline">Feedback</span>
         </Button>
 
         {isAuthenticated ? (
@@ -103,6 +111,7 @@ export function Topbar() {
       </div>
 
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
     </header>
   );
 }
