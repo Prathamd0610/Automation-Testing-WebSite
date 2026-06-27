@@ -2,17 +2,30 @@ import { Fragment } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
 import { MODULES, getCategoryBySlug } from '@/config/modules';
+import { getTrackById, getLesson } from '@/config/learning';
 
 const STATIC_LABELS: Record<string, string> = {
   modules: 'Modules',
   challenges: 'Challenges',
   workflows: 'Workflows',
+  learning: 'Learning',
   category: 'Categories',
   login: 'Sign in',
   register: 'Create account',
 };
 
 function labelFor(pathname: string, segment: string): string {
+  // Learning routes: resolve track and lesson titles from their config.
+  const parts = pathname.split('/').filter(Boolean);
+  if (parts[0] === 'learning') {
+    const trackId = parts[1];
+    const lessonId = parts[2];
+    if (parts.length === 2 && trackId) return getTrackById(trackId)?.title ?? segment;
+    if (parts.length === 3 && trackId && lessonId) {
+      return getLesson(trackId, lessonId)?.lesson.title ?? segment;
+    }
+  }
+
   const module = MODULES.find((m) => m.path === pathname);
   if (module) return module.title;
   const category = getCategoryBySlug(segment);

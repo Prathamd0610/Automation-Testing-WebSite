@@ -11,6 +11,12 @@ const RegisterPage = lazy(() => import('@/pages/RegisterPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 const CatalogPage = lazy(() => import('@/pages/CatalogPage'));
 const CategoryPage = lazy(() => import('@/pages/CategoryPage'));
+const ExplorePage = lazy(() => import('@/pages/ExplorePage'));
+
+// Learning (step-by-step courses)
+const LearningCatalogPage = lazy(() => import('@/pages/learning/LearningCatalogPage'));
+const LearningTrackPage = lazy(() => import('@/pages/learning/LearningTrackPage'));
+const LessonPage = lazy(() => import('@/pages/learning/LessonPage'));
 
 // Modules
 const InputsPage = lazy(() => import('@/pages/modules/InputsPage'));
@@ -32,6 +38,14 @@ const WebSocketPage = lazy(() => import('@/pages/modules/WebSocketPage'));
 const InfiniteScrollPage = lazy(() => import('@/pages/modules/InfiniteScrollPage'));
 const ShadowDomPage = lazy(() => import('@/pages/modules/ShadowDomPage'));
 const IframesPage = lazy(() => import('@/pages/modules/IframesPage'));
+const FormsPage = lazy(() => import('@/pages/modules/FormsPage'));
+const SwitchesPage = lazy(() => import('@/pages/modules/SwitchesPage'));
+const ClipboardPage = lazy(() => import('@/pages/modules/ClipboardPage'));
+const AccordionPage = lazy(() => import('@/pages/modules/AccordionPage'));
+const TabsPage = lazy(() => import('@/pages/modules/TabsPage'));
+const PaginationPage = lazy(() => import('@/pages/modules/PaginationPage'));
+const SearchFilterPage = lazy(() => import('@/pages/modules/SearchFilterPage'));
+const CanvasPage = lazy(() => import('@/pages/modules/CanvasPage'));
 
 // Challenges
 const NestedFramesPage = lazy(() => import('@/pages/modules/NestedFramesPage'));
@@ -88,10 +102,21 @@ export function AppRouter() {
       <Route element={<AppLayout />}>
         <Route index element={lazyElement(DashboardPage)} />
 
+        {/* Module hub — choose Learning or Practice. */}
+        <Route path="explore" element={lazyElement(ExplorePage)} />
+
         {/* Section catalogs list the categories you can drill into. */}
         <Route path="modules" element={lazyElement(CatalogPage)} />
         <Route path="challenges" element={lazyElement(CatalogPage)} />
         <Route path="workflows" element={lazyElement(CatalogPage)} />
+
+        {/* Learning catalog + track lesson lists are public so anyone can browse
+            course and lesson names. Reading a full lesson requires signing in. */}
+        <Route path="learning" element={lazyElement(LearningCatalogPage)} />
+        <Route path="learning/:trackId" element={lazyElement(LearningTrackPage)} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="learning/:trackId/:lessonId" element={lazyElement(LessonPage)} />
+        </Route>
 
         {/* Category landing pages — pick a module within a category. */}
         <Route path="category/:slug" element={lazyElement(CategoryPage)} />
@@ -115,6 +140,14 @@ export function AppRouter() {
         <Route path="modules/infinite-scroll" element={lazyElement(InfiniteScrollPage)} />
         <Route path="modules/shadow-dom" element={lazyElement(ShadowDomPage)} />
         <Route path="modules/iframes" element={lazyElement(IframesPage)} />
+        <Route path="modules/forms" element={lazyElement(FormsPage)} />
+        <Route path="modules/switches" element={lazyElement(SwitchesPage)} />
+        <Route path="modules/clipboard" element={lazyElement(ClipboardPage)} />
+        <Route path="modules/accordion" element={lazyElement(AccordionPage)} />
+        <Route path="modules/tabs" element={lazyElement(TabsPage)} />
+        <Route path="modules/pagination" element={lazyElement(PaginationPage)} />
+        <Route path="modules/search-filter" element={lazyElement(SearchFilterPage)} />
+        <Route path="modules/canvas" element={lazyElement(CanvasPage)} />
 
         <Route path="challenges/nested-frames" element={lazyElement(NestedFramesPage)} />
         <Route path="challenges/dynamic-ids" element={lazyElement(DynamicIdsPage)} />

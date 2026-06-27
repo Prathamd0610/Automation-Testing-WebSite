@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Clock, Star } from 'lucide-react';
+import { Search, Clock, Star, GraduationCap } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { MODULES, MODULE_CATEGORIES, searchModules } from '@/config/modules';
+import { LEARNING_TRACKS, trackPath, lessonPath } from '@/config/learning';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { toggleFavorite } from '@/store/prefsSlice';
 import { cn } from '@/lib/utils';
@@ -14,7 +15,7 @@ interface CommandPaletteProps {
 }
 
 interface Entry {
-  kind: 'module' | 'category';
+  kind: 'module' | 'category' | 'learning';
   id: string;
   title: string;
   description: string;
@@ -81,6 +82,49 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
           items: recents.slice(0, 4).map(toModuleEntry),
         });
       }
+    }
+
+    // Learning courses and lessons. Tracks always show; lessons only when searching.
+    const needle = q.toLowerCase();
+    const learningItems: Entry[] = [];
+    for (const track of LEARNING_TRACKS) {
+      const trackMatch =
+        !needle ||
+        track.title.toLowerCase().includes(needle) ||
+        track.description.toLowerCase().includes(needle) ||
+        track.tags.some((t) => t.includes(needle));
+      if (trackMatch) {
+        learningItems.push({
+          kind: 'learning',
+          id: `track-${track.id}`,
+          title: track.title,
+          description: track.subtitle,
+          meta: 'Course',
+          path: trackPath(track.id),
+          Icon: track.icon,
+        });
+      }
+      if (needle) {
+        for (const lesson of track.lessons) {
+          if (
+            lesson.title.toLowerCase().includes(needle) ||
+            lesson.summary.toLowerCase().includes(needle)
+          ) {
+            learningItems.push({
+              kind: 'learning',
+              id: `lesson-${track.id}-${lesson.id}`,
+              title: lesson.title,
+              description: `${track.title} · lesson`,
+              meta: 'Lesson',
+              path: lessonPath(track.id, lesson.id),
+              Icon: track.icon,
+            });
+          }
+        }
+      }
+    }
+    if (learningItems.length > 0) {
+      result.push({ header: 'Learning', headerIcon: GraduationCap, items: learningItems });
     }
 
     // Every activity, segregated by its category.

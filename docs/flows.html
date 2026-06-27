@@ -3,10 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Automation Testing Practice Platform — Flows &amp; Diagrams</title>
+    <title>Automation Testing Practice Platform — Visual Guide &amp; Flows</title>
     <style>
       :root {
         --blue: #007aff;
+        --blue-d: #0058b0;
+        --green: #1aa34a;
+        --amber: #c77700;
+        --rose: #d11a5a;
         --ink: #1d1d1f;
         --muted: #6e6e73;
         --line: #e5e5ea;
@@ -22,65 +26,70 @@
         background: var(--soft);
         line-height: 1.6;
       }
-      .page {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 48px;
-        background: var(--bg);
-      }
+      .page { max-width: 920px; margin: 0 auto; padding: 48px; background: var(--bg); }
       header.cover {
-        text-align: center;
-        padding: 56px 24px;
-        background: linear-gradient(135deg, rgba(0, 122, 255, 0.12), rgba(0, 122, 255, 0.02));
-        border-radius: 20px;
-        margin-bottom: 40px;
+        text-align: center; padding: 64px 24px;
+        background: linear-gradient(135deg, rgba(0, 122, 255, 0.14), rgba(0, 122, 255, 0.02));
+        border-radius: 22px; margin-bottom: 40px;
       }
       header.cover .logo {
-        width: 64px; height: 64px; border-radius: 16px;
-        background: var(--blue); color: #fff; display: inline-flex;
-        align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px;
+        width: 68px; height: 68px; border-radius: 18px; background: var(--blue); color: #fff;
+        display: inline-flex; align-items: center; justify-content: center; font-size: 34px; margin-bottom: 16px;
       }
-      h1 { font-size: 32px; margin: 8px 0; letter-spacing: -0.02em; }
-      h2 {
-        font-size: 24px; margin-top: 8px; padding-bottom: 8px;
-        border-bottom: 2px solid var(--line); letter-spacing: -0.01em;
-      }
-      h3 { font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+      h1 { font-size: 34px; margin: 8px 0; letter-spacing: -0.02em; }
+      h2 { font-size: 24px; margin-top: 8px; padding-bottom: 8px; border-bottom: 2px solid var(--line); letter-spacing: -0.01em; }
+      h3 { font-size: 18px; margin: 18px 0 4px; }
       p.lead { font-size: 18px; color: var(--muted); margin-top: 0; }
       .muted { color: var(--muted); }
-      section { margin-top: 40px; }
-      .diagram {
-        background: var(--soft); border: 1px solid var(--line); border-radius: 14px;
-        padding: 20px; margin: 16px 0; text-align: center; overflow-x: auto;
-      }
+      section { margin-top: 44px; }
+      .diagram { background: var(--soft); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin: 16px 0; text-align: center; overflow-x: auto; }
       table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 15px; }
-      th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+      th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
       th { background: var(--soft); font-weight: 600; }
-      code {
-        background: var(--soft); padding: 2px 6px; border-radius: 6px;
-        font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 0.9em;
-      }
+      code { background: var(--soft); padding: 2px 6px; border-radius: 6px; font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 0.88em; }
       .creds { background: rgba(0,122,255,0.06); border: 1px solid rgba(0,122,255,0.25); border-radius: 14px; padding: 8px 20px; }
-      .badge { display:inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
-      .badge.user { background: #e3f2ff; color: #0058b0; }
+      .badge { display:inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+      .badge.user { background: #e3f2ff; color: var(--blue-d); }
       .badge.admin { background: #fde8ef; color: #b00050; }
-      .toolbar {
-        position: sticky; top: 0; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
-        border-bottom: 1px solid var(--line); padding: 12px 0; text-align: center; margin: -48px -48px 24px;
-      }
-      .btn {
-        background: var(--blue); color: #fff; border: 0; padding: 10px 18px; border-radius: 10px;
-        font-size: 14px; font-weight: 600; cursor: pointer;
-      }
+      .badge.beg { background: #e4f7ec; color: var(--green); }
+      .badge.int { background: #fdf0dd; color: var(--amber); }
+      .badge.adv { background: #fde6ee; color: var(--rose); }
+      .badge.pub { background: #e4f7ec; color: var(--green); }
+      .badge.lock { background: #fdecef; color: var(--rose); }
+      .note { border-left: 4px solid var(--blue); background: rgba(0,122,255,0.05); padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 16px 0; }
+      .note.warn { border-color: var(--amber); background: rgba(199,119,0,0.07); }
+      .note.ok { border-color: var(--green); background: rgba(26,163,74,0.07); }
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      .toolbar { position: sticky; top: 0; z-index: 5; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 12px 0; text-align: center; margin: -48px -48px 24px; }
+      .btn { background: var(--blue); color: #fff; border: 0; padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
       footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; text-align: center; }
+
+      /* ---- Annotated screenshot system ---- */
+      figure.shot { margin: 18px 0 8px; }
+      .frame { position: relative; display: block; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); background: #fff; }
+      .frame .chrome { height: 30px; background: var(--soft); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 6px; padding: 0 12px; }
+      .frame .chrome i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+      .frame .chrome .r { background: #ff5f57; } .frame .chrome .y { background: #febc2e; } .frame .chrome .g { background: #28c840; }
+      .frame .chrome span { margin-left: 8px; font-size: 11px; color: var(--muted); font-family: ui-monospace, monospace; }
+      .frame .canvas { position: relative; }
+      .frame img { display: block; width: 100%; }
+      .frame .box { position: absolute; border: 2.5px solid var(--blue); border-radius: 8px; background: rgba(0,122,255,0.10); box-shadow: 0 0 0 2px rgba(255,255,255,0.6); }
+      .frame .m { position: absolute; width: 26px; height: 26px; border-radius: 50%; background: var(--blue); color: #fff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px rgba(0,122,255,0.25); transform: translate(-50%, -50%); }
+      figcaption { margin-top: 12px; }
+      ol.legend { list-style: none; padding: 0; margin: 0; }
+      ol.legend li { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+      ol.legend li:last-child { border-bottom: 0; }
+      .n { flex: 0 0 24px; height: 24px; border-radius: 50%; background: var(--blue); color: #fff; font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; margin-top: 1px; }
+
       @media print {
         body { background: #fff; }
-        .page { max-width: none; padding: 0 12mm; }
+        .page { max-width: none; padding: 0 10mm; }
         .no-print { display: none !important; }
         section { break-before: page; }
         header.cover { break-after: page; }
-        .diagram { break-inside: avoid; }
+        .diagram, figure.shot, table, .creds { break-inside: avoid; }
         h2 { break-after: avoid; }
+        a { color: var(--ink); text-decoration: none; }
       }
     </style>
   </head>
@@ -88,50 +97,161 @@
     <div class="page">
       <div class="toolbar no-print">
         <button class="btn" onclick="window.print()">⬇️  Save as PDF (Ctrl / Cmd + P)</button>
-        <span class="muted">&nbsp;&nbsp;Then choose “Save as PDF” as the destination.</span>
+        <span class="muted">&nbsp;&nbsp;Choose “Save as PDF” as the destination. Open this file from the project so the screenshots load.</span>
       </div>
 
       <header class="cover">
         <div class="logo">🧪</div>
         <h1>Automation Testing Practice Platform</h1>
-        <p class="lead">Flows, diagrams &amp; demo credentials — a shareable reference</p>
-        <p class="muted">MERN · React + TypeScript · Express · MongoDB · JWT · WebSockets</p>
+        <p class="lead">A complete visual guide — every flow, screenshot &amp; diagram explained</p>
+        <p class="muted">MERN · React + TypeScript · Express · MongoDB · JWT · WebSockets &nbsp;•&nbsp; 28 practice modules · 5 learning courses (47 lessons)</p>
       </header>
 
+      <!-- HOW TO READ -->
       <section style="break-before: auto; margin-top: 0;">
+        <h2>📖 How to read this guide</h2>
+        <p>
+          Each screen is shown in a browser frame. Blue boxes and numbered circles
+          (<span class="n" style="display:inline-flex;width:20px;height:20px;font-size:11px;vertical-align:middle">1</span>,
+          <span class="n" style="display:inline-flex;width:20px;height:20px;font-size:11px;vertical-align:middle">2</span> …) highlight the
+          important controls; the numbered list under every screenshot explains exactly what each one does. Diagrams use
+          <strong>Mermaid</strong> flow / sequence charts to show how data and the user move through the app.
+        </p>
+        <div class="note">
+          <strong>Two interfaces, one app.</strong> The platform ships with two switchable skins — a <strong>Classic</strong>
+          sidebar layout and a <strong>Modern</strong> floating-nav layout. Use the <code>Classic / Modern</code> toggle in the
+          top bar to switch; your choice is remembered.
+        </div>
+      </section>
+
+      <!-- DEMO CREDENTIALS -->
+      <section>
         <h2>🔑 Demo Credentials</h2>
-        <p>The app has two roles. The login screen no longer shows these — keep this sheet for your reference.</p>
+        <p>Two roles ship with the seed data. The login screen does <strong>not</strong> display them — keep this sheet handy.</p>
         <div class="creds">
           <table>
-            <thead>
-              <tr><th>Role</th><th>Email</th><th>Password</th><th>What it unlocks</th></tr>
-            </thead>
+            <thead><tr><th>Role</th><th>Email</th><th>Password</th><th>What it unlocks</th></tr></thead>
             <tbody>
               <tr>
                 <td><span class="badge user">USER</span></td>
                 <td><code>user@practice.dev</code></td>
                 <td><code>User1234!</code></td>
-                <td>All practice modules, async challenges &amp; business workflows (E‑commerce, Banking, CRM, Employees)</td>
+                <td>Full lesson content, all practice modules, async challenges &amp; business workflows</td>
               </tr>
               <tr>
                 <td><span class="badge admin">ADMIN</span></td>
                 <td><code>admin@practice.dev</code></td>
                 <td><code>Admin123!</code></td>
-                <td>Everything a user can do <strong>plus</strong> User Management and the Test‑Data Generator</td>
+                <td>Everything a user can do <strong>plus</strong> User Management &amp; the Test-Data Generator</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <p class="muted">
-          ℹ️ There is no separate “employee” login — the Employee portal, CRM, Banking and E‑commerce are
-          features any signed‑in user can access. Admin adds user management + bulk test‑data generation.
-          These are seed defaults; change them in <code>server/src/seeders/index.ts</code> before a public deployment.
-        </p>
+        <div class="note ok">
+          <strong>Security:</strong> sign-in submits over <code>POST /api/auth/login</code> with the credentials in the request
+          <em>body</em>. The email and password are <strong>never</strong> placed in the URL/query string, so they cannot leak
+          through browser history, server logs or referrer headers.
+        </div>
       </section>
 
+      <!-- THE TWO INTERFACES -->
+      <section>
+        <h2>🖥️ The Two Interfaces</h2>
+
+        <h3>Classic skin — home &amp; sidebar</h3>
+        <figure class="shot">
+          <div class="frame">
+            <div class="chrome"><i class="r"></i><i class="y"></i><i class="g"></i><span>/  (Classic)</span></div>
+            <div class="canvas">
+              <img src="guide-assets/07-classic-home.png" alt="Classic home page" />
+              <span class="box" style="left:61.5%;top:1.8%;width:15.2%;height:3.3%"></span>
+              <span class="m" style="left:61.5%;top:1.8%">1</span>
+              <span class="box" style="left:7.9%;top:38.5%;width:42.9%;height:4.6%"></span>
+              <span class="m" style="left:7.9%;top:38.5%">2</span>
+              <span class="box" style="left:7.9%;top:46.5%;width:82.3%;height:29.5%"></span>
+              <span class="m" style="left:7.9%;top:46.5%">3</span>
+            </div>
+          </div>
+          <figcaption>
+            <ol class="legend">
+              <li><span class="n">1</span><span><strong>UI skin toggle</strong> — switch between the Classic and Modern layouts at any time.</span></li>
+              <li><span class="n">2</span><span><strong>Primary calls to action</strong> — <em>Start learning</em> opens the courses; <em>Browse practice</em> opens the practice sandbox.</span></li>
+              <li><span class="n">3</span><span><strong>Live counters</strong> — 28 practice modules · 7 categories · 47 learning lessons · 11 async challenges · 4 workflows. These are computed from the config, so they’re always current.</span></li>
+            </ol>
+          </figcaption>
+        </figure>
+
+        <h3>Classic skin — left navigation (3 clear levels)</h3>
+        <figure class="shot">
+          <div class="frame" style="max-width:320px;margin:0 auto;">
+            <div class="canvas">
+              <img src="guide-assets/10-sidebar.png" alt="Classic sidebar navigation" />
+              <span class="box" style="left:4%;top:21.5%;width:90%;height:5.5%"></span>
+              <span class="m" style="left:4%;top:21.5%">1</span>
+              <span class="box" style="left:4%;top:29.5%;width:90%;height:5.5%"></span>
+              <span class="m" style="left:4%;top:29.5%">2</span>
+              <span class="box" style="left:4%;top:36%;width:90%;height:26%"></span>
+              <span class="m" style="left:4%;top:36%">3</span>
+            </div>
+          </div>
+          <figcaption>
+            <ol class="legend">
+              <li><span class="n">1</span><span><strong>Learning Modules</strong> (heading, level 1) — a bold, icon-chipped section you can collapse.</span></li>
+              <li><span class="n">2</span><span><strong>Practice Modules</strong> (heading, level 1) — the hands-on sandbox, also collapsible.</span></li>
+              <li><span class="n">3</span><span><strong>Categories</strong> (sub-headings, level 2) — uppercase labels with live count badges (Form Controls 9, Interactions 4…). Each expands to reveal its modules (level 3).</span></li>
+            </ol>
+          </figcaption>
+        </figure>
+
+        <h3>Modern skin — floating navigation &amp; immersive home</h3>
+        <figure class="shot">
+          <div class="frame">
+            <div class="chrome"><i class="r"></i><i class="y"></i><i class="g"></i><span>/  (Modern)</span></div>
+            <div class="canvas">
+              <img src="guide-assets/01-modern-home.png" alt="Modern home page" />
+              <span class="box" style="left:3%;top:1.5%;width:94%;height:6.5%"></span>
+              <span class="m" style="left:3%;top:1.5%">1</span>
+            </div>
+          </div>
+          <figcaption>
+            <ol class="legend">
+              <li><span class="n">1</span><span><strong>Floating glass nav</strong> — Home, a <strong>Modules</strong> menu (→ Learning / Practice), Challenges, Workflows and search. On smaller screens it collapses into a menu button.</span></li>
+            </ol>
+          </figcaption>
+        </figure>
+
+        <figure class="shot">
+          <div class="frame">
+            <div class="chrome"><i class="r"></i><i class="y"></i><i class="g"></i><span>/  →  stats bar</span></div>
+            <div class="canvas"><img src="guide-assets/02-modern-stats.png" alt="Modern stats bar" /></div>
+          </div>
+          <figcaption class="muted">The Modern home surfaces the same live counters in a single glass bar.</figcaption>
+        </figure>
+      </section>
+
+      <!-- SITE MAP -->
+      <section>
+        <h2>🗺️ Site Map &amp; Navigation</h2>
+        <p>From the dashboard, everything is two clicks away. “Modules” always branches into the guided <strong>Learning</strong> courses and the hands-on <strong>Practice</strong> sandbox.</p>
+        <pre class="mermaid diagram">
+flowchart TD
+    Home([Dashboard / Home]) --> Explore[Modules hub · /explore]
+    Home --> Challenges[Challenges]
+    Home --> Workflows[Workflows]
+    Home --> Search[(Global search<br/>modules + courses)]
+    Explore --> Learning[Learning Modules · /learning]
+    Explore --> Practice[Practice Modules · /modules]
+    Learning --> Track[Course · lessons list]
+    Track --> Lesson[Lesson content 🔒]
+    Practice --> Cat[Category] --> Module[Module page]
+    Home -.admin only.-> Admin[Admin Panel]
+        </pre>
+      </section>
+
+      <!-- ARCHITECTURE -->
       <section>
         <h2>🏗️ System Architecture</h2>
-        <p>Single‑page React app talking to an Express API (controller → service → repository) over REST + WebSockets, backed by MongoDB.</p>
+        <p>A single-page React app talks to an Express API (controller → service → repository) over REST + WebSockets, backed by MongoDB.</p>
         <pre class="mermaid diagram">
 flowchart LR
     subgraph Client["Browser"]
@@ -151,9 +271,10 @@ flowchart LR
         </pre>
       </section>
 
+      <!-- AUTH FLOW -->
       <section>
         <h2>🔐 Authentication Flow</h2>
-        <p>JWT issued as <code>httpOnly</code> cookies (access + refresh). The SPA auto‑refreshes on 401.</p>
+        <p>JWT access + refresh tokens. The SPA auto-refreshes on a 401 and redirects guests to the sign-in screen when they reach a protected page.</p>
         <pre class="mermaid diagram">
 sequenceDiagram
     actor U as User
@@ -161,29 +282,176 @@ sequenceDiagram
     participant A as API (Express)
     participant DB as MongoDB
     U->>C: Enter email + password
-    C->>A: POST /api/auth/login
+    C->>A: POST /api/auth/login  (creds in body)
     A->>DB: Find user + bcrypt compare
     DB-->>A: User record
-    A-->>C: 200 · httpOnly cookies · accessToken
+    A-->>C: 200 · accessToken · httpOnly refresh cookie
     C->>A: GET /api/auth/me
     A-->>C: Current user
-    C-->>U: Redirect to dashboard
+    C-->>U: Redirect back to the page they wanted
     Note over C,A: On 401 the SPA calls POST /api/auth/refresh
         </pre>
+        <figure class="shot">
+          <div class="frame" style="max-width:520px;margin:0 auto;">
+            <div class="chrome"><i class="r"></i><i class="y"></i><i class="g"></i><span>/login</span></div>
+            <div class="canvas"><img src="guide-assets/06-login.png" alt="Login screen" /></div>
+          </div>
+          <figcaption class="muted">The sign-in screen. Credentials post in the request body — never in the URL.</figcaption>
+        </figure>
       </section>
 
+      <!-- MODULE HUB -->
+      <section>
+        <h2>🧭 The Module Hub (Browse Modules)</h2>
+        <p>Clicking <strong>Browse modules</strong> opens a chooser so visitors decide between learning and practising before drilling in.</p>
+        <figure class="shot">
+          <div class="frame">
+            <div class="chrome"><i class="r"></i><i class="y"></i><i class="g"></i><span>/explore</span></div>
+            <div class="canvas">
+              <img src="guide-assets/03-explore.png" alt="Explore / module hub" />
+              <span class="box" style="left:2.9%;top:23%;width:45.1%;height:28.3%"></span>
+              <span class="m" style="left:2.9%;top:23%">1</span>
+              <span class="box" style="left:50%;top:23%;width:45.1%;height:28.3%"></span>
+              <span class="m" style="left:50%;top:23%">2</span>
+            </div>
+          </div>
+          <figcaption>
+            <ol class="legend">
+              <li><span class="n">1</span><span><strong>Learning Modules</strong> — 5 courses · 47 lessons. Opens the guided curriculum.</span></li>
+              <li><span class="n">2</span><span><strong>Practice Modules</strong> — 28 modules · 5 categories. Opens the hands-on sandbox. (Challenges &amp; Workflows sit just below.)</span></li>
+            </ol>
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- LEARNING FLOW -->
+      <section>
+        <h2>🎓 Learning Modules Flow <span class="badge pub">PREVIEW: PUBLIC</span> <span class="badge lock">CONTENT: LOGIN</span></h2>
+        <p>
+          The Learning area teaches automation step by step — Selenium, TestNG, Cucumber, building a full framework, and
+          advanced techniques. <strong>Anyone can browse</strong> the course catalogue and every lesson’s name &amp; summary;
+          <strong>reading a full lesson requires signing in</strong>, so the content stays gated while discovery stays open.
+        </p>
+        <pre class="mermaid diagram">
+flowchart TD
+    A([Open Learning · /learning]) --> B[Catalogue by level<br/>Beginner · Intermediate · Advanced]
+    B --> C[Open a course<br/>see all lesson names + summaries]
+    C --> D{Click a lesson}
+    D -->|Signed in| E[Read full lesson<br/>+ runnable code + “Practice side by side”]
+    D -->|Guest| F[Redirect to /login]
+    F --> G[Sign in] --> E
+        </pre>
+
+        <h3>Step 1 — Browse the catalogue (public)</h3>
+        <figure class="shot">
+          <div class="frame">
+            <div class="chrome"><i class="r"></i><i class="y"></i><i class="g"></i><span>/learning</span></div>
+            <div class="canvas">
+              <img src="guide-assets/04-learning-catalog.png" alt="Learning catalogue grouped by level" />
+              <span class="box" style="left:2.9%;top:25.2%;width:24.4%;height:4.6%"></span>
+              <span class="m" style="left:2.9%;top:25.2%">1</span>
+              <span class="box" style="left:2.9%;top:30.2%;width:45.1%;height:26.7%"></span>
+              <span class="m" style="left:2.9%;top:30.2%">2</span>
+            </div>
+          </div>
+          <figcaption>
+            <ol class="legend">
+              <li><span class="n">1</span><span><strong>Difficulty groups</strong> — courses are split into <span class="badge beg">Beginner</span> <span class="badge int">Intermediate</span> <span class="badge adv">Advanced</span> so learners start at the right level.</span></li>
+              <li><span class="n">2</span><span><strong>Course card</strong> — title, description, level, lesson count and total minutes. Clicking opens the course (no login needed to browse).</span></li>
+            </ol>
+          </figcaption>
+        </figure>
+
+        <h3>Step 2 — Open a course &amp; preview lessons (public)</h3>
+        <figure class="shot">
+          <div class="frame">
+            <div class="chrome"><i class="r"></i><i class="y"></i><i class="g"></i><span>/learning/selenium-java</span></div>
+            <div class="canvas">
+              <img src="guide-assets/05-learning-track.png" alt="Course page with preview banner and locked lessons" />
+              <span class="box" style="left:2.9%;top:41.3%;width:92.3%;height:8%"></span>
+              <span class="m" style="left:2.9%;top:41.3%">1</span>
+              <span class="box" style="left:77.6%;top:43.4%;width:15.6%;height:3.9%"></span>
+              <span class="m" style="left:77.6%;top:43.4%">2</span>
+              <span class="box" style="left:2.9%;top:52.8%;width:92.3%;height:12%"></span>
+              <span class="m" style="left:2.9%;top:52.8%">3</span>
+            </div>
+          </div>
+          <figcaption>
+            <ol class="legend">
+              <li><span class="n">1</span><span><strong>Preview banner</strong> — tells guests they can browse freely and must sign in to read.</span></li>
+              <li><span class="n">2</span><span><strong>Sign in to read</strong> — jumps to the login screen, then returns to the lesson.</span></li>
+              <li><span class="n">3</span><span><strong>Lesson rows</strong> — every lesson name, level, duration and a 🔒 lock icon are visible. Clicking a row opens the lesson (or login if you’re a guest).</span></li>
+            </ol>
+          </figcaption>
+        </figure>
+
+        <div class="note">
+          <strong>Step 3 — Read the lesson (login required).</strong> A signed-in learner sees the full lesson: objectives,
+          explanations, copy-ready Java programs, and a <em>“Practice this side by side”</em> panel that opens the matching live
+          practice module in a new tab. A guest who opens a lesson URL is redirected to <code>/login</code> and bounced back to the
+          lesson after signing in.
+        </div>
+      </section>
+
+      <!-- PRACTICE FLOW -->
+      <section>
+        <h2>🧩 Practice Modules Flow</h2>
+        <p>The practice sandbox groups 28 modules into categories. Every interactive element exposes a stable <code>data-testid</code> and proper ARIA roles.</p>
+
+        <h3>Category catalogue</h3>
+        <figure class="shot">
+          <div class="frame">
+            <div class="chrome"><i class="r"></i><i class="y"></i><i class="g"></i><span>/modules</span></div>
+            <div class="canvas">
+              <img src="guide-assets/09-practice-catalog.png" alt="Practice categories" />
+              <span class="box" style="left:2.9%;top:23%;width:45.1%;height:21.5%"></span>
+              <span class="m" style="left:2.9%;top:23%">1</span>
+            </div>
+          </div>
+          <figcaption>
+            <ol class="legend">
+              <li><span class="n">1</span><span><strong>Category card</strong> — e.g. Form Controls (9 modules). Opens a landing page that lists every module in that category.</span></li>
+            </ol>
+          </figcaption>
+        </figure>
+
+        <h3>Inside a module — Form &amp; Validation</h3>
+        <figure class="shot">
+          <div class="frame">
+            <div class="chrome"><i class="r"></i><i class="y"></i><i class="g"></i><span>/modules/forms</span></div>
+            <div class="canvas">
+              <img src="guide-assets/08-practice-forms.png" alt="Form and validation module" />
+              <span class="box" style="left:6%;top:35.3%;width:86.2%;height:51.3%"></span>
+              <span class="m" style="left:6%;top:35.3%">1</span>
+              <span class="box" style="left:6%;top:82.3%;width:15.5%;height:4.3%"></span>
+              <span class="m" style="left:6%;top:82.3%">2</span>
+            </div>
+          </div>
+          <figcaption>
+            <ol class="legend">
+              <li><span class="n">1</span><span><strong>Fields with live validation</strong> — name, email, password rule, matching confirmation, country, a bio counter and a terms checkbox. Errors appear once a field is touched.</span></li>
+              <li><span class="n">2</span><span><strong>Gated submit</strong> — stays disabled until the whole form is valid; on success a <em>result panel</em> (just below) reports the submitted account.</span></li>
+            </ol>
+          </figcaption>
+        </figure>
+        <p class="muted">Other new modules added in this style: Toggle Switches, Clipboard, Accordion, Tabs, Pagination, Search &amp; Filter and Canvas.</p>
+      </section>
+
+      <!-- USER FLOW -->
       <section>
         <h2>👤 User Flow</h2>
-        <p>What a signed‑in user (<code>user@practice.dev</code>) can reach.</p>
+        <p>Everything a signed-in user (<code>user@practice.dev</code>) can reach.</p>
         <pre class="mermaid diagram">
 flowchart TD
     Start([Visit app]) --> Auth{Authenticated?}
-    Auth -- No --> SignIn[Sign in / Register]
-    SignIn --> Dash[Dashboard]
-    Auth -- Yes --> Dash
-    Dash --> Modules[20+ Practice Modules]
-    Dash --> Challenges[Async / Dynamic Challenges]
-    Dash --> Workflows[Business Workflows]
+    Auth -- No --> Browse[Browse: home · explore · learning catalogue · practice]
+    Browse --> Gate[Open lesson / workflow] --> SignIn[Sign in]
+    Auth -- Yes --> Dash[Dashboard]
+    SignIn --> Dash
+    Dash --> Learning[🎓 Learning Courses<br/>read full lessons]
+    Dash --> Modules[🧩 28 Practice Modules]
+    Dash --> Challenges[🌀 Async / Dynamic Challenges]
+    Dash --> Workflows[🏢 Business Workflows]
     Workflows --> Shop[E-commerce]
     Workflows --> Bank[Banking]
     Workflows --> Crm[CRM]
@@ -191,110 +459,101 @@ flowchart TD
         </pre>
       </section>
 
+      <!-- ADMIN FLOW -->
       <section>
         <h2>🛡️ Admin Flow</h2>
         <p>An admin (<code>admin@practice.dev</code>) gets everything a user does, plus privileged tools.</p>
         <pre class="mermaid diagram">
 flowchart TD
-    A([Sign in as admin]) --> D[Dashboard]
+    A([Sign in as admin]) --> D[Dashboard + Admin Panel]
     D --> All[Everything a user can do]
-    D --> UM[User Management<br/>/api/users]
-    D --> TD[Test-Data Generator<br/>/api/admin/test-data]
-    UM --> CU[Create / Update / Delete users]
-    TD --> Gen[Bulk-generate users · products · orders · customers · employees]
+    D --> UM[User Management]
+    D --> TD[Test-Data Generator]
+    UM --> CU[Create / Update / Delete users &amp; roles]
+    TD --> Gen[Bulk-generate products · orders · customers · employees]
         </pre>
       </section>
 
+      <!-- WORKFLOWS -->
       <section>
-        <h2>👔 Employee (HR) Flow</h2>
-        <p>The Employees workflow is a full CRUD HR portal.</p>
-        <pre class="mermaid diagram">
-flowchart LR
-    E([Employees page]) --> L[List + search + paginate]
-    L --> C[Add employee] --> API1[(POST /api/employees)]
-    L --> U[Edit employee] --> API2[(PUT /api/employees/:id)]
-    L --> Del[Delete employee] --> API3[(DELETE /api/employees/:id)]
-        </pre>
-      </section>
-
-      <section>
-        <h2>🛒 E‑commerce Flow</h2>
-        <pre class="mermaid diagram">
-flowchart LR
-    P[Browse products] --> Cart[Add to cart]
-    Cart --> Place[Place order]
-    Place --> API[(POST /api/orders)]
-    API --> S[Status: pending → paid → shipped → delivered]
-        </pre>
-      </section>
-
-      <section>
-        <h2>🏦 Banking Flow</h2>
-        <pre class="mermaid diagram">
+        <h2>🏢 Business Workflows</h2>
+        <div class="grid2">
+          <div>
+            <h3>🛒 E-commerce</h3>
+            <pre class="mermaid diagram">
 flowchart TD
-    Acc[Select account] --> Amt[Enter amount]
-    Amt --> T[Transfer]
-    T --> V{Sufficient balance?}
-    V -- Yes --> OK[Update balances · show receipt]
-    V -- No --> Err[Show validation error]
-        </pre>
-      </section>
-
-      <section>
-        <h2>👥 CRM Lead Lifecycle</h2>
-        <pre class="mermaid diagram">
+    P[Browse products] --> Cart[Add to cart]
+    Cart --> Place[Place order] --> API[(POST /api/orders)]
+    API --> S[pending → paid → shipped → delivered]
+            </pre>
+          </div>
+          <div>
+            <h3>🏦 Banking</h3>
+            <pre class="mermaid diagram">
+flowchart TD
+    Acc[Select account] --> Amt[Enter amount] --> T[Transfer]
+    T --> V{Enough balance?}
+    V -- Yes --> OK[Update + receipt]
+    V -- No --> Err[Validation error]
+            </pre>
+          </div>
+          <div>
+            <h3>👥 CRM lead lifecycle</h3>
+            <pre class="mermaid diagram">
 stateDiagram-v2
     [*] --> lead
     lead --> active: convert
     active --> inactive: churn
     inactive --> active: re-engage
     active --> [*]
-        </pre>
+            </pre>
+          </div>
+          <div>
+            <h3>👔 Employees (HR)</h3>
+            <pre class="mermaid diagram">
+flowchart LR
+    E([Employees]) --> L[List · search · paginate]
+    L --> C[Add] --> A1[(POST)]
+    L --> U[Edit] --> A2[(PUT)]
+    L --> Del[Delete] --> A3[(DELETE)]
+            </pre>
+          </div>
+        </div>
       </section>
 
+      <!-- ERD -->
       <section>
         <h2>🗄️ Database Schema (ERD)</h2>
         <pre class="mermaid diagram">
 erDiagram
-    USER {
-        string id PK
-        string email UK
-        string role
-    }
-    PRODUCT {
-        string id PK
-        string sku UK
-        number price
-    }
-    ORDER {
-        string id PK
-        string orderNumber UK
-        string status
-    }
-    ORDER_ITEM {
-        string product FK
-        number quantity
-    }
-    CUSTOMER {
-        string id PK
-        string status
-    }
-    EMPLOYEE {
-        string id PK
-        string employeeId UK
-    }
+    USER { string id PK
+           string email UK
+           string role }
+    PRODUCT { string id PK
+              string sku UK
+              number price }
+    ORDER { string id PK
+            string orderNumber UK
+            string status }
+    ORDER_ITEM { string product FK
+                 number quantity }
+    CUSTOMER { string id PK
+               string status }
+    EMPLOYEE { string id PK
+               string employeeId UK }
     ORDER ||--o{ ORDER_ITEM : embeds
     ORDER_ITEM }o--|| PRODUCT : references
         </pre>
       </section>
 
+      <!-- DEPLOYMENT -->
       <section>
         <h2>☁️ Deployment Topology</h2>
-        <p>Frontend on Vercel, backend on Render, database on MongoDB Atlas, kept awake by UptimeRobot.</p>
+        <p>Frontend on a static host, backend on Render, database on MongoDB Atlas, kept awake by UptimeRobot.</p>
         <pre class="mermaid diagram">
 flowchart LR
     Dev[You] -->|git push| GH[(GitHub repo)]
-    GH -->|auto deploy| V[Vercel · React SPA]
+    GH -->|auto deploy| V[Static host · React SPA]
     GH -->|auto deploy| R[Render · Express API]
     User((User)) -->|HTTPS| V
     V -->|/api over HTTPS| R
@@ -304,28 +563,48 @@ flowchart LR
         <table>
           <thead><tr><th>Piece</th><th>Platform</th><th>Key setting</th></tr></thead>
           <tbody>
-            <tr><td>Frontend</td><td>Vercel</td><td><code>VITE_API_URL=https://&lt;api&gt;.onrender.com/api</code></td></tr>
+            <tr><td>Frontend</td><td>Cloudflare Pages / Netlify / Vercel</td><td><code>VITE_API_URL=https://&lt;api&gt;.onrender.com/api</code> · SPA fallback to <code>/index.html</code></td></tr>
             <tr><td>Backend</td><td>Render</td><td><code>NODE_ENV=production</code>, <code>MONGODB_URI</code>, JWT secrets, <code>FRONTEND_URL</code></td></tr>
-            <tr><td>Database</td><td>MongoDB Atlas</td><td>Whitelist <code>0.0.0.0/0</code></td></tr>
-            <tr><td>Keep‑alive</td><td>UptimeRobot</td><td>Ping <code>/api/health</code> every 5 min</td></tr>
+            <tr><td>Database</td><td>MongoDB Atlas</td><td>Network access allow-list</td></tr>
+            <tr><td>Keep-alive</td><td>UptimeRobot</td><td>Ping <code>/api/health</code> every 5 min</td></tr>
           </tbody>
         </table>
       </section>
 
+      <!-- CATALOG -->
       <section>
-        <h2>🧩 Module &amp; Workflow Catalog</h2>
-        <h3>Practice modules</h3>
-        <p>Buttons · Inputs · Checkboxes · Radios · Dropdowns · Sliders · Date Picker · Tables · Modals ·
-           Drag &amp; Drop · Mouse Actions · Keyboard · File Upload · Infinite Scroll · Iframes · Nested Frames ·
-           Shadow DOM · WebSockets · API Testing · Auth Demo</p>
-        <h3>Async &amp; dynamic challenges</h3>
-        <p>Autocomplete · Multi‑step Wizard · Dynamic IDs · Flaky endpoints</p>
-        <h3>Business workflows</h3>
-        <p>E‑commerce · Banking · CRM · Employees (HR)</p>
+        <h2>🗂️ Full Catalogue</h2>
+
+        <h3>Learning courses (5 · 47 lessons)</h3>
+        <table>
+          <thead><tr><th>Course</th><th>Level</th><th>Lessons</th></tr></thead>
+          <tbody>
+            <tr><td>Selenium WebDriver with Java</td><td><span class="badge beg">Beginner</span></td><td>8</td></tr>
+            <tr><td>TestNG Test Framework</td><td><span class="badge beg">Beginner</span></td><td>8</td></tr>
+            <tr><td>Cucumber BDD with Java</td><td><span class="badge beg">Beginner</span></td><td>8</td></tr>
+            <tr><td>Build a Selenium Java Framework</td><td><span class="badge int">Intermediate</span></td><td>14</td></tr>
+            <tr><td>Advanced Selenium Automation</td><td><span class="badge adv">Advanced</span></td><td>9</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Practice modules (28)</h3>
+        <table>
+          <thead><tr><th>Category</th><th>Modules</th></tr></thead>
+          <tbody>
+            <tr><td>Form Controls (9)</td><td>Inputs · Buttons · Dropdowns · Checkboxes · Radios · Sliders · Date Picker · <strong>Form &amp; Validation</strong> · <strong>Toggle Switches</strong></td></tr>
+            <tr><td>Interactions (4)</td><td>Drag &amp; Drop · Mouse Actions · Keyboard · <strong>Clipboard</strong></td></tr>
+            <tr><td>Components (4)</td><td>Modals · <strong>Accordion</strong> · <strong>Tabs</strong> · <strong>Pagination</strong></td></tr>
+            <tr><td>Data &amp; Network (7)</td><td>Tables · File Upload · API Console · WebSockets · Infinite Scroll · Auth Demo · <strong>Search &amp; Filter</strong></td></tr>
+            <tr><td>Advanced DOM (4)</td><td>Shadow DOM · iFrames · Nested Frames · <strong>Canvas</strong></td></tr>
+            <tr><td>Async Challenges (11)</td><td>Autocomplete · Wizard · Dynamic IDs · Delayed Loading · Random Elements · AJAX · Toasts · Stale Elements · Spinners · Alerts · Tooltips</td></tr>
+            <tr><td>Business Workflows (4)</td><td>E-commerce · Banking · CRM · Employees</td></tr>
+          </tbody>
+        </table>
+        <p class="muted"><strong>Bold</strong> = newly added modules.</p>
       </section>
 
       <footer>
-        Automation Testing Practice Platform · Generated reference sheet ·
+        Automation Testing Practice Platform · Visual guide &amp; flows ·
         Every interactive element exposes a stable <code>data-testid</code> + ARIA attributes.
       </footer>
     </div>

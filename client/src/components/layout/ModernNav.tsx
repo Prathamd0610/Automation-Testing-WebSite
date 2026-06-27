@@ -16,6 +16,9 @@ import {
   Puzzle,
   Workflow,
   ShieldCheck,
+  GraduationCap,
+  BookOpen,
+  ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -30,16 +33,45 @@ import { CommandPalette } from './CommandPalette';
 import { FeedbackDialog } from '@/components/common/FeedbackDialog';
 import { UiModeToggle } from '@/components/common/UiModeToggle';
 import { MODULE_CATEGORIES, getModulesByCategory, categorySlug } from '@/config/modules';
+import { LEARNING_TRACKS, trackPath } from '@/config/learning';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import type { LucideIcon } from 'lucide-react';
 
-const PRIMARY_LINKS = [
-  { to: '/', label: 'Home', icon: Home, end: true, testId: 'nav-dashboard' },
-  { to: '/modules', label: 'Modules', icon: LayoutGrid, testId: 'nav-modules' },
+interface NavLinkDef {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+  testId: string;
+  end?: boolean;
+}
+
+const HOME_LINK: NavLinkDef = { to: '/', label: 'Home', icon: Home, end: true, testId: 'nav-dashboard' };
+
+const PRIMARY_LINKS: NavLinkDef[] = [
   { to: '/challenges', label: 'Challenges', icon: Puzzle, testId: 'nav-challenges' },
   { to: '/workflows', label: 'Workflows', icon: Workflow, testId: 'nav-workflows' },
 ];
+
+/** "Modules" dropdown — branches into the Learning courses and Practice sandbox. */
+const MODULE_BRANCHES = [
+  {
+    to: '/learning',
+    label: 'Learning',
+    description: 'Step-by-step Selenium, TestNG & Cucumber courses',
+    icon: GraduationCap,
+    testId: 'nav-learning',
+  },
+  {
+    to: '/modules',
+    label: 'Practice',
+    description: 'Hands-on modules for real automation drills',
+    icon: LayoutGrid,
+    testId: 'nav-practice',
+  },
+] as const;
+
 
 /**
  * Modern-skin top navigation: a floating glass bar with always-visible primary
@@ -75,6 +107,14 @@ export function ModernNav() {
       isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground',
     );
 
+  const home = HOME_LINK;
+  const secondaryLinks = links;
+  const mobileLinks: NavLinkDef[] = [HOME_LINK, ...links];
+  const modulesActive =
+    location.pathname.startsWith('/modules') ||
+    location.pathname.startsWith('/learning') ||
+    location.pathname.startsWith('/category');
+
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-6 sm:pt-4">
       <div className="pointer-events-auto mx-auto w-full max-w-6xl">
@@ -95,13 +135,56 @@ export function ModernNav() {
 
           {/* Always-visible primary navigation (desktop) */}
           <div className="ml-1 hidden items-center gap-0.5 lg:flex">
-            {links.map(({ to, label, icon: Icon, end, testId }) => (
-              <NavLink key={to} to={to} end={end} data-testid={testId} className={linkClass}>
+            <NavLink to={home.to} end={home.end} data-testid={home.testId} className={linkClass}>
+              <home.icon className="h-4 w-4" aria-hidden="true" />
+              {home.label}
+            </NavLink>
+
+            {/* Modules → Learning / Practice */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  data-testid="nav-modules"
+                  className={cn(
+                    'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
+                    modulesActive
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+                  Modules
+                  <ChevronDown className="h-3.5 w-3.5 opacity-70" aria-hidden="true" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-72">
+                <DropdownMenuLabel>Browse modules</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {MODULE_BRANCHES.map((branch) => (
+                  <DropdownMenuItem key={branch.to} asChild>
+                    <Link to={branch.to} data-testid={branch.testId} className="items-start gap-3">
+                      <span className="brand-icon mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <branch.icon className="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <span className="flex flex-col">
+                        <span className="text-sm font-medium text-foreground">{branch.label}</span>
+                        <span className="text-xs text-muted-foreground">{branch.description}</span>
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {secondaryLinks.map(({ to, label, icon: Icon, testId }) => (
+              <NavLink key={to} to={to} data-testid={testId} className={linkClass}>
                 <Icon className="h-4 w-4" aria-hidden="true" />
                 {label}
               </NavLink>
             ))}
           </div>
+
 
           {/* Search — magnifier icon opens the full command palette. */}
           <Button
@@ -207,7 +290,7 @@ export function ModernNav() {
                 <UiModeToggle />
               </div>
 
-              {links.map(({ to, label, icon: Icon, end }) => (
+              {mobileLinks.map(({ to, label, icon: Icon, end }) => (
                 <NavLink
                   key={to}
                   to={to}
@@ -226,6 +309,26 @@ export function ModernNav() {
                 </NavLink>
               ))}
 
+              {/* Modules → Learning / Practice */}
+              {MODULE_BRANCHES.map((branch) => (
+                <NavLink
+                  key={branch.to}
+                  to={branch.to}
+                  data-testid={`${branch.testId}-mobile`}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium',
+                      isActive
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                    )
+                  }
+                >
+                  <branch.icon className="h-4 w-4" aria-hidden="true" />
+                  {branch.label}
+                </NavLink>
+              ))}
+
               <button
                 type="button"
                 onClick={() => {
@@ -240,7 +343,47 @@ export function ModernNav() {
 
               <div className="my-2 h-px bg-border" aria-hidden="true" />
 
-              {/* All modules, grouped by category */}
+              {/* Learning courses */}
+              <div className="pb-1">
+                <Link
+                  to="/learning"
+                  data-testid="nav-learning-mobile"
+                  className="mb-1 flex items-center gap-1.5 px-3 text-xs font-semibold uppercase tracking-wider text-primary"
+                >
+                  <GraduationCap className="h-3.5 w-3.5" aria-hidden="true" /> Learning
+                </Link>
+                <ul>
+                  <li>
+                    <Link
+                      to="/learning"
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
+                    >
+                      <BookOpen className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
+                      <span className="truncate">All courses</span>
+                    </Link>
+                  </li>
+                  {LEARNING_TRACKS.map((track) => (
+                    <li key={track.id}>
+                      <Link
+                        to={trackPath(track.id)}
+                        data-testid={`nav-learning-${track.id}`}
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
+                      >
+                        <track.icon className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
+                        <span className="truncate">{track.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="my-2 h-px bg-border" aria-hidden="true" />
+
+              <p className="mb-1 flex items-center gap-1.5 px-3 text-xs font-semibold uppercase tracking-wider text-primary">
+                <LayoutGrid className="h-3.5 w-3.5" aria-hidden="true" /> Practice
+              </p>
+
+              {/* All practice modules, grouped by category */}
               <div className="space-y-3 pb-1">
                 {MODULE_CATEGORIES.map((category) => {
                   const modules = getModulesByCategory(category);

@@ -13,7 +13,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#-license)
 
-**20+ practice modules · async & dynamic challenges · real CRUD business apps · JWT auth · WebSockets · file uploads**
+**28 practice modules · 5 step-by-step learning courses · async & dynamic challenges · real CRUD business apps · JWT auth · WebSockets · file uploads**
 
 [Features](#-features) · [Architecture](#️-architecture) · [Flows](#-application-flows) · [Quick Start](#-quick-start) · [Deployment](#️-deployment-vercel--render--uptimerobot) · [Docs](#-documentation)
 
@@ -59,7 +59,7 @@ business apps (**e‑commerce, banking, CRM, employee portal**) backed by a real
 
 ## 🚀 Features
 
-### 🧩 Practice modules (20+)
+### 🧩 Practice modules (28)
 
 | | | | |
 | --- | --- | --- | --- |
@@ -68,6 +68,21 @@ business apps (**e‑commerce, banking, CRM, employee portal**) backed by a real
 | ✅ Modals | ✅ Drag & Drop | ✅ Mouse Actions | ✅ Keyboard |
 | ✅ File Upload | ✅ Infinite Scroll | ✅ Iframes | ✅ Nested Frames |
 | ✅ Shadow DOM | ✅ WebSockets | ✅ API Testing | ✅ Auth Demo |
+| ✅ Form & Validation | ✅ Toggle Switches | ✅ Clipboard | ✅ Accordion |
+| ✅ Tabs | ✅ Pagination | ✅ Search & Filter | ✅ Canvas |
+
+### 🎓 Learning courses (5 · 47 lessons)
+
+Guided, beginner-to-advanced courses with runnable Java programs and a “practice side by side” link
+on every lesson (sign-in required):
+
+| Course | Level | Lessons |
+| ------ | ----- | ------- |
+| Selenium WebDriver with Java | Beginner | 8 |
+| TestNG Test Framework | Beginner | 8 |
+| Cucumber BDD with Java | Beginner | 8 |
+| Build a Selenium Java Framework | Intermediate | 14 |
+| Advanced Selenium Automation | Advanced | 9 |
 
 ### 🌀 Async & dynamic challenges
 
@@ -139,7 +154,8 @@ flowchart TD
     Auth -- No --> SignIn[Sign in / Register]
     SignIn --> Dash[Dashboard]
     Auth -- Yes --> Dash
-    Dash --> Modules[20+ Practice Modules]
+    Dash --> Learning[🎓 Learning Courses]
+    Dash --> Modules[28 Practice Modules]
     Dash --> Challenges[Async / Dynamic Challenges]
     Dash --> Workflows[Business Workflows]
     Workflows --> Shop[🛒 E-commerce]

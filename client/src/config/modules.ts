@@ -35,6 +35,14 @@ import {
   Landmark,
   Users,
   Briefcase,
+  ClipboardCheck,
+  ToggleRight,
+  ClipboardCopy,
+  ListCollapse,
+  AppWindow,
+  GalleryHorizontalEnd,
+  ListFilter,
+  PenTool,
 } from 'lucide-react';
 
 export type ModuleCategory =
@@ -135,6 +143,26 @@ export const MODULES: ModuleMeta[] = [
     tags: ['date', 'calendar', 'time'],
     difficulty: 'intermediate',
   },
+  {
+    id: 'forms',
+    title: 'Form & Validation',
+    description: 'A registration form with live field validation, password rules and a gated submit.',
+    path: '/modules/forms',
+    category: 'Form Controls',
+    icon: ClipboardCheck,
+    tags: ['form', 'validation', 'required', 'submit'],
+    difficulty: 'intermediate',
+  },
+  {
+    id: 'switches',
+    title: 'Toggle Switches',
+    description: 'Independent and dependent switches, a master toggle and a disabled control.',
+    path: '/modules/switches',
+    category: 'Form Controls',
+    icon: ToggleRight,
+    tags: ['switch', 'toggle', 'state'],
+    difficulty: 'beginner',
+  },
 
   // ---- Interactions ----
   {
@@ -167,6 +195,16 @@ export const MODULES: ModuleMeta[] = [
     tags: ['keyboard', 'shortcut', 'keypress'],
     difficulty: 'intermediate',
   },
+  {
+    id: 'clipboard',
+    title: 'Clipboard',
+    description: 'Copy text and tokens to the clipboard and capture pasted content.',
+    path: '/modules/clipboard',
+    category: 'Interactions',
+    icon: ClipboardCopy,
+    tags: ['clipboard', 'copy', 'paste'],
+    difficulty: 'intermediate',
+  },
 
   // ---- Components ----
   {
@@ -177,6 +215,36 @@ export const MODULES: ModuleMeta[] = [
     category: 'Components',
     icon: SquareStack,
     tags: ['modal', 'dialog', 'drawer'],
+    difficulty: 'intermediate',
+  },
+  {
+    id: 'accordion',
+    title: 'Accordion',
+    description: 'Single-open FAQ and multi-open panels to expand, collapse and assert.',
+    path: '/modules/accordion',
+    category: 'Components',
+    icon: ListCollapse,
+    tags: ['accordion', 'collapse', 'expand', 'faq'],
+    difficulty: 'beginner',
+  },
+  {
+    id: 'tabs',
+    title: 'Tabs',
+    description: 'A tabbed panel where only the active tab’s content is visible.',
+    path: '/modules/tabs',
+    category: 'Components',
+    icon: AppWindow,
+    tags: ['tabs', 'tabpanel', 'switch'],
+    difficulty: 'beginner',
+  },
+  {
+    id: 'pagination',
+    title: 'Pagination',
+    description: 'Paged list with prev/next, numbered pages and a page-size selector.',
+    path: '/modules/pagination',
+    category: 'Components',
+    icon: GalleryHorizontalEnd,
+    tags: ['pagination', 'pager', 'pages'],
     difficulty: 'intermediate',
   },
   {
@@ -239,6 +307,16 @@ export const MODULES: ModuleMeta[] = [
     tags: ['scroll', 'lazy', 'pagination'],
     difficulty: 'advanced',
   },
+  {
+    id: 'search-filter',
+    title: 'Search & Filter',
+    description: 'Debounced search, category filter, sorting and a live result count.',
+    path: '/modules/search-filter',
+    category: 'Data & Network',
+    icon: ListFilter,
+    tags: ['search', 'filter', 'sort', 'list'],
+    difficulty: 'intermediate',
+  },
 
   // ---- Advanced DOM ----
   {
@@ -259,6 +337,16 @@ export const MODULES: ModuleMeta[] = [
     category: 'Advanced DOM',
     icon: Frame,
     tags: ['iframe', 'frame', 'embedded'],
+    difficulty: 'advanced',
+  },
+  {
+    id: 'canvas',
+    title: 'Canvas',
+    description: 'An HTML canvas with no inner DOM — click to plot points and assert on coordinates.',
+    path: '/modules/canvas',
+    category: 'Advanced DOM',
+    icon: PenTool,
+    tags: ['canvas', 'coordinates', 'draw'],
     difficulty: 'advanced',
   },
 
