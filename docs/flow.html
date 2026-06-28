@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Automation Testing Practice Platform — PC Screen Visual Guide</title>
+    <style>
+      :root {
+        --ink: #14122a;
+        --muted: #5b5872;
+        --line: #e7e4f3;
+        --bg: #ffffff;
+        --soft: #f7f6fc;
+        --brand: #7c3aed;
+        --brand-2: #c026d3;
+        --ok: #059669;
+        --amber: #b45309;
+        --rose: #be123c;
+        --sky: #0369a1;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--soft);
+        color: var(--ink);
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+      }
+      a { color: var(--brand); }
+
+      /* ----- Desktop two-column shell (sticky TOC + content) ----- */
+      .shell { display: grid; grid-template-columns: 260px 1fr; gap: 28px; max-width: 1320px; margin: 0 auto; padding: 28px; }
+      .toc {
+        position: sticky; top: 20px; align-self: start;
+        max-height: calc(100vh - 40px); overflow: auto;
+        border: 1px solid var(--line); border-radius: 16px; background: var(--bg); padding: 16px;
+      }
+      .toc h3 { margin: 6px 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+      .toc a { display: block; padding: 7px 10px; border-radius: 9px; text-decoration: none; color: var(--ink); font-size: 14px; }
+      .toc a:hover { background: var(--soft); }
+      .content { min-width: 0; }
+
+      header.cover {
+        border: 1px solid var(--line); border-radius: 20px; padding: 32px;
+        background: linear-gradient(135deg, #f3e8ff, #ffffff 55%, #fce7f3);
+      }
+      header.cover h1 { margin: 0 0 8px; font-size: 32px; letter-spacing: -.02em; }
+      header.cover p { margin: 6px 0; color: var(--muted); }
+      .pills { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+      .pill { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #fff; border: 1px solid var(--line); color: #5b21b6; }
+
+      section { margin-top: 34px; scroll-margin-top: 18px; }
+      h2 { font-size: 23px; margin: 0 0 6px; letter-spacing: -.01em; }
+      h2 .num { color: var(--brand); font-weight: 800; }
+      .sub { color: var(--muted); margin: 0 0 14px; }
+
+      figure { margin: 0 0 14px; }
+      .frame { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 18px 40px rgba(30,16,64,.10); background: #fff; }
+      .frame .bar { height: 34px; background: #f4f3fa; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 7px; padding: 0 13px; }
+      .frame .bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+      .frame .bar .r { background: #ff5f57; } .frame .bar .y { background: #febc2e; } .frame .bar .g { background: #28c840; }
+      .frame .bar span { margin-left: 10px; font-size: 12px; color: var(--muted); font-family: ui-monospace, Menlo, Consolas, monospace; }
+      .frame img { display: block; width: 100%; }
+
+      .explain { border: 1px solid var(--line); border-left: 4px solid var(--brand); border-radius: 0 12px 12px 0; background: var(--bg); padding: 14px 18px; }
+      .explain h4 { margin: 4px 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+      .explain ul { margin: 0; padding-left: 18px; }
+      .explain li { margin: 7px 0; }
+      .tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; vertical-align: middle; }
+      .tag.b { background: #ede9fe; color: #5b21b6; }
+      .tag.g { background: #dcfce7; color: var(--ok); }
+      .tag.a { background: #fef3c7; color: var(--amber); }
+      .tag.r { background: #ffe4e6; color: var(--rose); }
+      .tag.s { background: #e0f2fe; color: var(--sky); }
+      code { background: #f1eefb; padding: 1px 6px; border-radius: 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .88em; }
+
+      table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+      th, td { border-bottom: 1px solid var(--line); padding: 9px 11px; text-align: left; vertical-align: top; }
+      th { background: var(--soft); }
+
+      .diagram { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 14px; margin: 12px 0; overflow-x: auto; }
+      footer { margin-top: 40px; border-top: 1px solid var(--line); padding-top: 16px; color: var(--muted); font-size: 13px; }
+
+      @media (max-width: 980px) {
+        .shell { grid-template-columns: 1fr; }
+        .toc { position: static; max-height: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- ---------- Sticky table of contents ---------- -->
+      <nav class="toc">
+        <h3>On this page</h3>
+        <a href="#intro">Overview</a>
+        <a href="#nav">Navigation map</a>
+        <a href="#modern-chrome">1 · Modern shell</a>
+        <a href="#modern-home">2 · Modern home</a>
+        <a href="#explore">3 · Explore</a>
+        <a href="#learning">4 · Learning catalog</a>
+        <a href="#track">5 · Course / track</a>
+        <a href="#practice">6 · Practice catalog</a>
+        <a href="#module">7 · Practice module</a>
+        <a href="#palette">8 · Command palette</a>
+        <a href="#shortcuts">9 · Shortcuts &amp; progress</a>
+        <a href="#launcher">10 · App launcher</a>
+        <a href="#login">11 · Sign in</a>
+        <a href="#classic-chrome">12 · Classic shell</a>
+        <a href="#classic-home">13 · Classic home</a>
+        <a href="#classic-flyout">14 · Classic flyout</a>
+      </nav>
+
+      <!-- ---------- Main content ---------- -->
+      <main class="content">
+        <header class="cover" id="intro">
+          <h1>Automation Testing Practice Platform</h1>
+          <p>A desktop (PC screen) visual guide. Every screen below is shown at full 1440&nbsp;px width and annotated so you can see exactly what each control does.</p>
+          <p>The app ships with <strong>two switchable interfaces</strong> that share the same routes and data — a <strong>Modern</strong> shell (floating header + bottom command dock) and a <strong>Classic</strong> shell (left console rail + flyouts).</p>
+          <div class="pills">
+            <span class="pill">40 Practice modules</span>
+            <span class="pill">7 Categories</span>
+            <span class="pill">150 Lessons</span>
+            <span class="pill">18 Courses</span>
+            <span class="pill">11 Async challenges</span>
+            <span class="pill">4 Business workflows</span>
+          </div>
+        </header>
+
+        <!-- NAVIGATION MAP -->
+        <section id="nav">
+          <h2><span class="num">★</span> How everything connects</h2>
+          <p class="sub">From Home, every area is one or two clicks away in both shells.</p>
+          <pre class="mermaid diagram">
+flowchart TD
+    Home([Home / Dashboard]) --> Explore[Explore hub]
+    Home --> Learn[Learning]
+    Home --> Practice[Practice modules]
+    Home --> Challenges[Challenges]
+    Home --> Workflows[Workflows]
+    Explore --> Learn
+    Explore --> Practice
+    Learn --> Track[Course / track] --> Lesson[Lesson]
+    Practice --> Category[Category] --> Module[Module page]
+    Home -.admin only.-> Admin[Admin panel]
+          </pre>
+        </section>
+
+        <!-- 1 · MODERN SHELL -->
+        <section id="modern-chrome">
+          <h2><span class="num">1</span> · The Modern shell — header &amp; command dock</h2>
+          <p class="sub">The Modern skin keeps chrome out of the way: a floating top header and a macOS-style dock at the bottom.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>localhost — Modern</span></div>
+            <img src="guide-assets/pc-modern-chrome.png" alt="Modern shell header and command dock" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Brand capsule</strong> (top-left) — flask logo + “Automation Lab”; clicking it returns Home.</li>
+              <li><strong>Spotlight search</strong> (center) — “Search or jump to anything…”. Opens the command palette; the <code>/</code> hint shows the keyboard shortcut.</li>
+              <li><strong>Actions capsule</strong> (top-right), left → right:
+                <span class="tag s">theme</span> light/dark toggle ·
+                <span class="tag s">keyboard</span> Shortcuts &amp; progress ·
+                <span class="tag s">message</span> Feedback ·
+                <span class="tag b">Classic | Modern</span> interface switch ·
+                <span class="tag b">Sign in</span> (or your avatar menu when signed in).</li>
+              <li><strong>Command dock</strong> (bottom, floating) — primary navigation: <strong>Home, Learn, Practice, Challenges, Workflows</strong>, a divider, then the <strong>bento “All apps”</strong> launcher. The active section is filled with the violet→fuchsia gradient; hovering a tile raises it and shows its label.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2 · MODERN HOME -->
+        <section id="modern-home">
+          <h2><span class="num">2</span> · Modern home (dashboard)</h2>
+          <p class="sub">An immersive landing page: hero, live counters, recents, the full course catalog and practice categories.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/</span></div>
+            <img src="guide-assets/pc-modern-home.png" alt="Modern home page, full length" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Hero</strong> — badge “The modern automation sandbox”, headline “Master UI &amp; API automation in one immersive playground”, and a note that every control ships with stable <code>data-testid</code> hooks for Selenium, Cypress and Playwright.</li>
+              <li><strong>Primary CTAs</strong> — <span class="tag b">Start learning</span> (→ Learning), <span class="tag b">Browse practice modules</span> (→ Practice) and <span class="tag b">All modules</span> (opens the bento launcher).</li>
+              <li><strong>Live stats bar</strong> — five counters computed from config: <strong>40</strong> Practice modules · <strong>7</strong> Categories · <strong>150</strong> Learning lessons · <strong>11</strong> Async challenges · <strong>4</strong> Business workflows.</li>
+              <li><strong>Search field</strong> — filters both modules and courses as you type.</li>
+              <li><strong>Recently viewed</strong> — quick links back to modules you opened (e.g. “Form &amp; Validation”).</li>
+              <li><strong>Learn step by step</strong> — the full catalog grouped by tool family: <strong>Selenium (6 courses)</strong> and <strong>Playwright (12 courses)</strong>. Each card shows level <span class="tag g">Beginner</span> <span class="tag a">Intermediate</span> <span class="tag r">Advanced</span>, lesson count and total minutes.</li>
+              <li><strong>Browse practice modules</strong> — category cards with live counts: Form Controls (12), Interactions (6), Components (9), Data &amp; Network (9), Advanced DOM (4), Async Challenges (11), Business Workflows (4).</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 3 · EXPLORE -->
+        <section id="explore">
+          <h2><span class="num">3</span> · Explore hub</h2>
+          <p class="sub">A guided chooser that routes you to the right area: learn, practise, challenge or build.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/explore</span></div>
+            <img src="guide-assets/pc-explore.png" alt="Explore hub" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Path cards</strong> — large entry points for <strong>Learning</strong> (guided courses) and <strong>Practice</strong> (hands-on modules), each with its own live counts.</li>
+              <li><strong>Challenges &amp; Workflows</strong> — secondary entries for deliberately flaky scenarios and end-to-end business journeys.</li>
+              <li><strong>Meta line</strong> — reiterates the catalog size (courses · lessons) so you know the scope before diving in.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 4 · LEARNING CATALOG -->
+        <section id="learning">
+          <h2><span class="num">4</span> · Learning catalog</h2>
+          <p class="sub">Courses are segregated by tool family, then by level — so you pick a stack and start at the right place.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/learning</span></div>
+            <img src="guide-assets/pc-learning-catalog.png" alt="Learning catalog" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Header</strong> — “{N} tracks · 150 lessons” summary across Selenium &amp; Playwright.</li>
+              <li><strong>Tool sections</strong> — <strong>Selenium</strong> (Java: WebDriver, TestNG, Cucumber, a full framework, advanced &amp; real-world) and <strong>Playwright</strong> (TypeScript: fundamentals → locators, network mocking, CI, architecture, expert prep).</li>
+              <li><strong>Course cards</strong> — each shows a title, summary, level badge, lesson count and estimated minutes. Browsing is public; opening a full lesson requires signing in.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 5 · TRACK -->
+        <section id="track">
+          <h2><span class="num">5</span> · Course / track page</h2>
+          <p class="sub">Every course lists its lessons with duration and level; signed-in users open the full content.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/learning/selenium-java</span></div>
+            <img src="guide-assets/pc-learning-track.png" alt="Course / track page" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Course header</strong> — title, subtitle, level, total lessons and minutes.</li>
+              <li><strong>Lesson list</strong> — each row shows the lesson name, an estimated duration and its level; a lock icon marks content that opens after sign-in.</li>
+              <li><strong>Practice links</strong> — many lessons reference matching practice modules so you can try each concept against real controls.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 6 · PRACTICE CATALOG -->
+        <section id="practice">
+          <h2><span class="num">6</span> · Practice catalog</h2>
+          <p class="sub">The hands-on sandbox, grouped into categories. Every control exposes a stable <code>data-testid</code>.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/modules</span></div>
+            <img src="guide-assets/pc-practice-catalog.png" alt="Practice catalog" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Category cards</strong> — Form Controls, Interactions, Components, Data &amp; Network, Advanced DOM, Async Challenges and Business Workflows, each with a live module count.</li>
+              <li><strong>Card body</strong> — a one-line description of what that category drills (e.g. “Mouse, keyboard, drag-and-drop and pointer-driven behaviours”).</li>
+              <li>Selecting a card opens its landing page listing every module in that category.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 7 · MODULE -->
+        <section id="module">
+          <h2><span class="num">7</span> · Inside a module — Form &amp; Validation</h2>
+          <p class="sub">A representative module showing live validation, gated submit and a result panel.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/modules/forms</span></div>
+            <img src="guide-assets/pc-practice-forms.png" alt="Form and validation module" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Breadcrumbs</strong> — show Practice → category → module so you always know where you are.</li>
+              <li><strong>Form fields</strong> — name, email, a password with rules, a matching confirmation, country select, a bio counter and a terms checkbox; errors appear once a field is touched.</li>
+              <li><strong>Gated submit</strong> — stays disabled until the whole form is valid.</li>
+              <li><strong>Result panel</strong> — on success, the submitted values are echoed back so a test can assert the outcome.</li>
+              <li>Every input has a stable <code>data-testid</code> and proper ARIA roles for reliable selectors.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 8 · COMMAND PALETTE -->
+        <section id="palette">
+          <h2><span class="num">8</span> · Command palette (press <code>/</code>)</h2>
+          <p class="sub">A keyboard-first jump menu across every module and course.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/ — command palette</span></div>
+            <img src="guide-assets/pc-command-palette.png" alt="Command palette" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Search input</strong> — type to fuzzy-match modules, courses and quick actions.</li>
+              <li><strong>Grouped results</strong> — jump targets are organised so you can arrow-key down and press Enter to navigate.</li>
+              <li><strong>Keyboard hints</strong> — <code>↑</code>/<code>↓</code> to move, <code>Enter</code> to open, <code>Esc</code> to close.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 9 · SHORTCUTS -->
+        <section id="shortcuts">
+          <h2><span class="num">9</span> · Shortcuts &amp; progress (press <code>?</code>)</h2>
+          <p class="sub">A single dialog for keyboard shortcuts and your local learning/practice progress.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>? — shortcuts &amp; progress</span></div>
+            <img src="guide-assets/pc-shortcuts.png" alt="Shortcuts and progress dialog" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Progress rings</strong> — two rings show how many <strong>Learning</strong> lessons and <strong>Practice</strong> modules you've completed (stored locally).</li>
+              <li><strong>Shortcut list</strong> — <code>/</code> open search, <code>↑/↓</code> move, <code>Enter</code> open, <code>Esc</code> close, <code>?</code> open this panel.</li>
+              <li><strong>Reset progress</strong> — clears your locally-stored completion state.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 10 · LAUNCHER -->
+        <section id="launcher">
+          <h2><span class="num">10</span> · App launcher (bento)</h2>
+          <p class="sub">The bento icon in the dock opens a full app/module launcher with search and pinning.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>App launcher</span></div>
+            <img src="guide-assets/pc-launcher.png" alt="Bento app launcher" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Search</strong> — filter all destinations instantly.</li>
+              <li><strong>Tiles</strong> — quick access to top-level areas and individual modules.</li>
+              <li><strong>Pinned / customise</strong> — keep your most-used destinations within one click.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 11 · LOGIN -->
+        <section id="login">
+          <h2><span class="num">11</span> · Sign in</h2>
+          <p class="sub">Credentials post in the request body — never in the URL. The SPA redirects you back to the page you wanted.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/login</span></div>
+            <img src="guide-assets/pc-login.png" alt="Sign in page" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Email + password fields</strong> with a single <strong>Sign in</strong> button and a “Create one” link to register.</li>
+              <li><strong>Why sign in</strong> — full lesson content and protected actions unlock after authentication.</li>
+            </ul>
+          </div>
+          <pre class="mermaid diagram">
+sequenceDiagram
+    actor User
+    participant SPA as React SPA
+    participant API as Express API
+    participant DB as MongoDB
+    User->>SPA: Submit email + password
+    SPA->>API: POST /api/auth/login (body)
+    API->>DB: Verify user + password hash
+    DB-->>API: User record
+    API-->>SPA: access token + refresh cookie
+    SPA-->>User: Return to the requested page
+          </pre>
+        </section>
+
+        <!-- 12 · CLASSIC SHELL -->
+        <section id="classic-chrome">
+          <h2><span class="num">12</span> · The Classic shell — console rail</h2>
+          <p class="sub">The Classic skin uses a slim left icon rail with slide-out flyouts and a minimal command header.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>localhost — Classic</span></div>
+            <img src="guide-assets/pc-classic-chrome.png" alt="Classic shell rail and header" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Left rail</strong> — the brand flask plus icon items: <strong>Home, Learn, Practice, Challenges, Workflows</strong> (and <strong>Admin</strong> for admins), with an <strong>Apps</strong> launcher pinned at the bottom. The active item shows a violet accent bar.</li>
+              <li><strong>Console header</strong> — a wide search field (with the <code>/</code> hint) plus the same quick actions: launcher, theme, Shortcuts &amp; progress, Feedback, the Classic | Modern switch and Sign in.</li>
+              <li><strong>Breadcrumbs</strong> — sit just under the header to track your location.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 13 · CLASSIC HOME -->
+        <section id="classic-home">
+          <h2><span class="num">13</span> · Classic home</h2>
+          <p class="sub">The same content as the Modern home, rendered in the calmer console layout.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/ (Classic)</span></div>
+            <img src="guide-assets/pc-classic-home.png" alt="Classic home page" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Hero</strong> — “Practice UI &amp; API automation in one safe, realistic sandbox”, with <strong>Start learning</strong>, <strong>Browse practice</strong> and <strong>All modules</strong> actions.</li>
+              <li><strong>Stat tiles</strong> — the same live counts as the Modern home, laid out as cards.</li>
+              <li><strong>Learn step by step</strong> &amp; <strong>Browse practice modules</strong> — identical catalog and category grids, so anything you automate works in either skin.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 14 · CLASSIC FLYOUT -->
+        <section id="classic-flyout">
+          <h2><span class="num">14</span> · Classic rail flyout</h2>
+          <p class="sub">Clicking <strong>Learn</strong> (or <strong>Practice</strong>) on the rail slides out a panel with the full hierarchy.</p>
+          <figure class="frame">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>/ — Learn flyout</span></div>
+            <img src="guide-assets/pc-classic-rail-flyout.png" alt="Classic rail flyout panel" />
+          </figure>
+          <div class="explain">
+            <h4>What's in this screen</h4>
+            <ul>
+              <li><strong>Flyout header</strong> — names the section (Learn / Practice) with a close button.</li>
+              <li><strong>Grouped tree</strong> — for Learn: <strong>Selenium</strong> and <strong>Playwright</strong> families, each listing their tracks with a level dot and a count pill.</li>
+              <li><strong>“All courses”</strong> shortcut — jumps straight to the full catalog; clicking any item closes the flyout and navigates.</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer>
+          Visual guide for PC screens · screenshots captured at 1440&nbsp;px from the live app and stored in <code>docs/guide-assets/</code>. Both interfaces expose the same routes, data and <code>data-testid</code> hooks.
+        </footer>
+      </main>
+    </div>
+
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+    </script>
+  </body>
+</html>
