@@ -28,9 +28,9 @@ const allowedOrigins = env.FRONTEND_URL.split(',').map(normalizeOrigin).filter(B
 
 /**
  * CORS origin check that tolerates trailing-slash differences, supports multiple
- * configured origins, and allows Vercel preview deployments (`*.vercel.app`).
- * Requests without an `Origin` header (curl, health checks, server-to-server)
- * are allowed through.
+ * configured origins, and allows common preview deployments
+ * (`*.vercel.app`, `*.pages.dev`). Requests without an `Origin` header
+ * (curl, health checks, server-to-server) are allowed through.
  */
 function corsOrigin(
   origin: string | undefined,
@@ -39,14 +39,15 @@ function corsOrigin(
   if (!origin) return callback(null, true);
   const normalized = normalizeOrigin(origin);
 
-  let isVercelPreview = false;
+  let isPreviewDomain = false;
   try {
-    isVercelPreview = new URL(normalized).hostname.endsWith('.vercel.app');
+    const hostname = new URL(normalized).hostname;
+    isPreviewDomain = hostname.endsWith('.vercel.app') || hostname.endsWith('.pages.dev');
   } catch {
-    isVercelPreview = false;
+    isPreviewDomain = false;
   }
 
-  const isAllowed = allowedOrigins.includes(normalized) || isVercelPreview;
+  const isAllowed = allowedOrigins.includes(normalized) || isPreviewDomain;
   return callback(null, isAllowed);
 }
 
