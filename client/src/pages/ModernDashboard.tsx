@@ -13,6 +13,7 @@ import {
   Star,
   MousePointer2,
   GraduationCap,
+  LayoutGrid,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { ModuleCard } from '@/components/common/ModuleCard';
@@ -30,7 +31,8 @@ import {
 } from '@/config/modules';
 import { LEARNING_TRACKS, TOTAL_LESSONS, searchLearningTracks } from '@/config/learning';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useAppSelector } from '@/store/hooks';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { toggleLauncher } from '@/store/uiSlice';
 
 const PRACTICE_MODULE_COUNT = MODULES.filter(
   (m) => m.category !== 'Async Challenges' && m.category !== 'Business Workflows',
@@ -55,6 +57,7 @@ const STATS = [
 /* ── Pinned, scroll-scrubbed hero (scrollytelling) ─────────────────────────── */
 function Hero() {
   const ref = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -90,7 +93,7 @@ function Hero() {
         <Link
           to="/learning"
           data-testid="hero-start-learning"
-          className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[hsl(214_85%_50%)] px-6 py-3 text-sm font-semibold text-white shadow-apple-lg transition-transform hover:-translate-y-0.5"
+          className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 py-3 text-sm font-semibold text-white shadow-apple-lg transition-transform hover:-translate-y-0.5"
         >
           <GraduationCap className="h-4 w-4" aria-hidden="true" />
           Start learning
@@ -104,6 +107,15 @@ function Hero() {
           <Boxes className="h-4 w-4" aria-hidden="true" />
           Browse practice modules
         </Link>
+        <button
+          type="button"
+          onClick={() => dispatch(toggleLauncher())}
+          data-testid="hero-launcher"
+          className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/60 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur transition-colors hover:bg-card"
+        >
+          <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+          All modules
+        </button>
       </div>
     </motion.div>
   );

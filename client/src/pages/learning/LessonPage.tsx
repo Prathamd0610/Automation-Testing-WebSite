@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  Circle,
   Clock,
   ListChecks,
   Target,
@@ -20,6 +21,8 @@ import {
   lessonPath,
   trackPath,
 } from '@/config/learning';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { toggleLessonComplete, lessonKey } from '@/store/progressSlice';
 import { cn } from '@/lib/utils';
 
 const levelTone = {
@@ -31,6 +34,8 @@ const levelTone = {
 /** Reads a single lesson with an in-track lesson list and prev/next nav. */
 export default function LessonPage() {
   const { trackId = '', lessonId = '' } = useParams();
+  const dispatch = useAppDispatch();
+  const completed = useAppSelector((s) => s.progress.lessons);
   const found = getLesson(trackId, lessonId);
 
   if (!found) {
@@ -52,6 +57,8 @@ export default function LessonPage() {
   const { track, lesson, index } = found;
   const { prev, next } = getAdjacentLessons(trackId, lessonId);
   const Icon = track.icon;
+  const key = lessonKey(trackId, lessonId);
+  const isComplete = completed.includes(key);
 
   return (
     <div className="mx-auto w-full max-w-6xl">
@@ -85,7 +92,11 @@ export default function LessonPage() {
                           : 'text-muted-foreground hover:bg-accent hover:text-foreground',
                       )}
                     >
-                      <span className="text-xs tabular-nums opacity-70">{i + 1}.</span>
+                      {completed.includes(lessonKey(track.id, l.id)) ? (
+                        <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" aria-hidden="true" />
+                      ) : (
+                        <span className="text-xs tabular-nums opacity-70">{i + 1}.</span>
+                      )}
                       <span className="truncate">{l.title}</span>
                     </Link>
                   </li>
@@ -124,6 +135,23 @@ export default function LessonPage() {
               {lesson.title}
             </h1>
             <p className="text-base text-muted-foreground">{lesson.summary}</p>
+            <div className="pt-1">
+              <Button
+                variant={isComplete ? 'outline' : 'default'}
+                size="sm"
+                onClick={() => dispatch(toggleLessonComplete(key))}
+                data-testid="lesson-complete-toggle"
+                aria-pressed={isComplete}
+                className="gap-1.5"
+              >
+                {isComplete ? (
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+                ) : (
+                  <Circle className="h-4 w-4" aria-hidden="true" />
+                )}
+                {isComplete ? 'Completed' : 'Mark complete'}
+              </Button>
+            </div>
           </header>
 
           {/* Objectives */}

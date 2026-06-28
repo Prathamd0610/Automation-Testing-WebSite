@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { ModernNav } from './ModernNav';
+import { SpotlightHeader } from './SpotlightHeader';
+import { CommandDock } from './CommandDock';
 import { Footer } from './Footer';
+import { Breadcrumbs } from './Breadcrumbs';
+import { AppLauncher } from './AppLauncher';
 import { AuroraBackground } from '@/components/common/AuroraBackground';
 import { ScrollProgress } from '@/components/common/ScrollProgress';
 import { MODULES } from '@/config/modules';
@@ -9,31 +12,14 @@ import { useAppDispatch } from '@/store/hooks';
 import { addRecent } from '@/store/prefsSlice';
 
 /**
- * Modern-skin application shell. A full-width immersive canvas that scrolls on
- * the window (enabling smooth, scroll-driven storytelling) with a floating top
- * navigation and an aurora backdrop — distinct from the classic sidebar layout.
+ * Modern shell — an immersive, scroll-driven canvas with three floating glass
+ * capsules up top (brand · spotlight search · actions) and a magnifying command
+ * dock anchored to the bottom for primary navigation.
  */
 export function ModernLayout() {
   const location = useLocation();
   const dispatch = useAppDispatch();
 
-  // Global "/" shortcut focuses search on every page.
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (
-        event.key === '/' &&
-        !['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement)?.tagName) &&
-        !(event.target as HTMLElement)?.isContentEditable
-      ) {
-        event.preventDefault();
-        document.querySelector<HTMLButtonElement>('[data-testid="open-search"]')?.click();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
-  // Reset scroll on navigation and record the recently-viewed module.
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 });
     const visited = MODULES.find((m) => m.path === location.pathname);
@@ -47,15 +33,21 @@ export function ModernLayout() {
       </a>
       <ScrollProgress />
       <AuroraBackground />
-      <ModernNav />
+      <SpotlightHeader />
       <main
         id="main-content"
         tabIndex={-1}
-        className="relative mx-auto w-full max-w-6xl px-4 pb-24 pt-24 sm:px-6 sm:pt-28 lg:px-8"
+        className="relative mx-auto w-full max-w-7xl px-4 pb-36 pt-24 sm:px-6 sm:pt-28 lg:px-8"
       >
+        <div className="mb-4">
+          <Breadcrumbs />
+        </div>
         <Outlet />
       </main>
+      <CommandDock />
       <Footer />
+      <div className="h-24 sm:h-28" aria-hidden="true" />
+      <AppLauncher />
     </div>
   );
 }

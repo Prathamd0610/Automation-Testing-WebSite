@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { GraduationCap, Chrome, Drama } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { PageContainer } from '@/components/common/PageContainer';
@@ -42,6 +44,15 @@ const CATEGORY_ICON: Record<LearningCategory, LucideIcon> = {
  * Picking a track opens its lesson list.
  */
 export default function LearningCatalogPage() {
+  const { hash } = useLocation();
+
+  // Scroll to a tool section when arriving via /learning#selenium etc.
+  useEffect(() => {
+    if (!hash) return;
+    const el = document.getElementById(hash.slice(1));
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [hash]);
+
   return (
     <PageContainer>
       <PageHeader
@@ -63,7 +74,8 @@ export default function LearningCatalogPage() {
         return (
           <section
             key={category}
-            className="space-y-6"
+            id={category.toLowerCase()}
+            className="scroll-mt-24 space-y-6"
             data-testid={`learning-category-${category.toLowerCase()}`}
           >
             <div className="flex flex-col gap-2 rounded-xl border border-border bg-card/50 p-5">

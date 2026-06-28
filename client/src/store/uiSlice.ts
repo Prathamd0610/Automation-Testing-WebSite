@@ -5,8 +5,20 @@ type UiMode = 'classic' | 'modern';
 
 interface UiState {
   sidebarOpen: boolean;
+  /** Classic skin: collapse the sidebar to a slim icon rail. */
+  sidebarCollapsed: boolean;
+  /** Full-screen app/module launcher overlay. */
+  launcherOpen: boolean;
   theme: Theme;
   uiMode: UiMode;
+}
+
+function initialCollapsed(): boolean {
+  try {
+    return localStorage.getItem('atp_sidebar_collapsed') === '1';
+  } catch {
+    return false;
+  }
 }
 
 function initialTheme(): Theme {
@@ -39,6 +51,8 @@ function initialUiMode(): UiMode {
 
 const initialState: UiState = {
   sidebarOpen: false,
+  sidebarCollapsed: initialCollapsed(),
+  launcherOpen: false,
   theme: initialTheme(),
   uiMode: initialUiMode(),
 };
@@ -52,6 +66,28 @@ const uiSlice = createSlice({
     },
     setSidebar(state, action: PayloadAction<boolean>) {
       state.sidebarOpen = action.payload;
+    },
+    toggleSidebarCollapsed(state) {
+      state.sidebarCollapsed = !state.sidebarCollapsed;
+      try {
+        localStorage.setItem('atp_sidebar_collapsed', state.sidebarCollapsed ? '1' : '0');
+      } catch {
+        /* ignore */
+      }
+    },
+    setSidebarCollapsed(state, action: PayloadAction<boolean>) {
+      state.sidebarCollapsed = action.payload;
+      try {
+        localStorage.setItem('atp_sidebar_collapsed', action.payload ? '1' : '0');
+      } catch {
+        /* ignore */
+      }
+    },
+    setLauncher(state, action: PayloadAction<boolean>) {
+      state.launcherOpen = action.payload;
+    },
+    toggleLauncher(state) {
+      state.launcherOpen = !state.launcherOpen;
     },
     setTheme(state, action: PayloadAction<Theme>) {
       state.theme = action.payload;
@@ -72,5 +108,14 @@ const uiSlice = createSlice({
   },
 });
 
-export const { toggleSidebar, setSidebar, setTheme, setUiMode } = uiSlice.actions;
+export const {
+  toggleSidebar,
+  setSidebar,
+  toggleSidebarCollapsed,
+  setSidebarCollapsed,
+  setLauncher,
+  toggleLauncher,
+  setTheme,
+  setUiMode,
+} = uiSlice.actions;
 export default uiSlice.reducer;

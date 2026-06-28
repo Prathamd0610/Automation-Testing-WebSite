@@ -13,8 +13,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Apple blue #007AFF */
-    --primary: 211 100% 50%;
+    /* Electric violet */
+    --primary: 258 89% 60%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96%;
@@ -23,8 +23,8 @@
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 211 100% 96%;
-    --accent-foreground: 211 100% 35%;
+    --accent: 258 89% 96%;
+    --accent-foreground: 258 70% 42%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -37,7 +37,7 @@
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 211 100% 50%;
+    --ring: 258 89% 60%;
 
     --radius: 0.75rem;
   }
@@ -49,7 +49,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 222 47% 10%;
     --popover-foreground: 0 0% 98%;
-    --primary: 211 100% 55%;
+    --primary: 258 92% 70%;
     --primary-foreground: 0 0% 100%;
     --secondary: 217 33% 17%;
     --secondary-foreground: 0 0% 98%;
@@ -65,7 +65,7 @@
     --warning-foreground: 0 0% 100%;
     --border: 217 33% 20%;
     --input: 217 33% 20%;
-    --ring: 211 100% 55%;
+    --ring: 258 92% 70%;
   }
 }
 
@@ -123,8 +123,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 230 15% 12%;
 
-    /* Enterprise indigo brand on neutral surfaces. */
-    --primary: 231 60% 52%;
+    /* Electric violet brand on neutral surfaces. */
+    --primary: 268 84% 62%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 225 24% 95%;
@@ -133,8 +133,8 @@
     --muted: 225 16% 95%;
     --muted-foreground: 230 6% 42%;
 
-    --accent: 231 60% 95%;
-    --accent-foreground: 231 60% 38%;
+    --accent: 268 84% 96%;
+    --accent-foreground: 268 70% 44%;
 
     --destructive: 4 78% 56%;
     --destructive-foreground: 0 0% 100%;
@@ -147,7 +147,7 @@
 
     --border: 228 16% 90%;
     --input: 228 16% 90%;
-    --ring: 231 60% 52%;
+    --ring: 268 84% 62%;
 
     --radius: 1rem;
   }
@@ -159,7 +159,7 @@
     --card-foreground: 220 14% 96%;
     --popover: 230 16% 11%;
     --popover-foreground: 220 14% 96%;
-    --primary: 231 72% 64%;
+    --primary: 270 90% 72%;
     --primary-foreground: 230 18% 8%;
     --secondary: 230 12% 16%;
     --secondary-foreground: 220 14% 96%;
@@ -175,7 +175,7 @@
     --warning-foreground: 0 0% 100%;
     --border: 230 12% 18%;
     --input: 230 12% 18%;
-    --ring: 231 72% 64%;
+    --ring: 270 90% 72%;
   }
 }
 
@@ -191,8 +191,8 @@
   .ui-modern body {
     background-color: hsl(var(--background));
     background-image:
-      radial-gradient(60rem 60rem at 110% -10%, hsl(231 70% 55% / 0.10), transparent 60%),
-      radial-gradient(50rem 50rem at -10% 110%, hsl(210 80% 55% / 0.10), transparent 60%);
+      radial-gradient(60rem 60rem at 110% -10%, hsl(268 84% 62% / 0.12), transparent 60%),
+      radial-gradient(50rem 50rem at -10% 110%, hsl(300 80% 60% / 0.10), transparent 60%);
     background-attachment: fixed;
   }
 
@@ -211,9 +211,9 @@
 
   /* Gradient icon chips for page headers and module cards. */
   .ui-modern .brand-icon {
-    background-image: linear-gradient(135deg, hsl(231 64% 52%), hsl(211 85% 54%));
+    background-image: linear-gradient(135deg, hsl(258 82% 60%), hsl(292 82% 62%));
     color: #fff;
-    box-shadow: 0 10px 24px -10px hsl(225 70% 50% / 0.7);
+    box-shadow: 0 10px 24px -10px hsl(272 80% 55% / 0.7);
   }
 
   /* Tasteful custom scrollbar in modern mode. */
@@ -238,9 +238,9 @@
   .ui-modern .text-gradient-brand {
     background-image: linear-gradient(
       120deg,
-      hsl(231 64% 52%),
-      hsl(214 85% 54%),
-      hsl(252 70% 60%)
+      hsl(258 82% 60%),
+      hsl(292 82% 62%),
+      hsl(231 80% 64%)
     );
     -webkit-background-clip: text;
     background-clip: text;

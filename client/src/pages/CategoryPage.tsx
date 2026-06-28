@@ -8,19 +8,21 @@ import { ScrollReveal } from '@/components/common/ScrollReveal';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { LevelPill } from '@/components/layout/nav-primitives';
 import {
-  MODULE_CATEGORIES,
   getModulesByCategory,
   getCategoryBySlug,
   categorySlug,
   CATEGORY_DESCRIPTIONS,
 } from '@/config/modules';
+import { getDomainForCategory, groupByDifficulty } from '@/config/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
+import { cn } from '@/lib/utils';
 
 /**
- * Landing page for a single module category. Lets the user browse and pick a
- * module within the category instead of scrolling the dashboard. Shared by both
- * the classic and modern shells.
+ * Landing page for a single practice category. Shows the parent domain and its
+ * sibling categories for lateral movement, then lists the category's modules
+ * grouped into difficulty bands (the third navigation level).
  */
 export default function CategoryPage() {
   const { slug = '' } = useParams();
@@ -46,8 +48,8 @@ export default function CategoryPage() {
       <PageContainer>
         <PageHeader title="Category not found" description="That category does not exist." />
         <Button asChild variant="outline">
-          <Link to="/" data-testid="category-back">
-            <ArrowLeft className="h-4 w-4" /> Back to dashboard
+          <Link to="/modules" data-testid="category-back">
+            <ArrowLeft className="h-4 w-4" /> Back to modules
           </Link>
         </Button>
       </PageContainer>
@@ -55,18 +57,24 @@ export default function CategoryPage() {
   }
 
   const Icon = modules[0]?.icon;
-  const index = MODULE_CATEGORIES.indexOf(category);
-  const prev = index > 0 ? MODULE_CATEGORIES[index - 1] : undefined;
-  const next = index < MODULE_CATEGORIES.length - 1 ? MODULE_CATEGORIES[index + 1] : undefined;
+  const domain = getDomainForCategory(category);
+  const siblings = domain ? domain.categories : [category];
+  const bands = groupByDifficulty(filtered);
+  const searching = debounced.trim().length > 0;
+
+  // Prev/next within the domain for tight lateral movement.
+  const idx = siblings.indexOf(category);
+  const prev = idx > 0 ? siblings[idx - 1] : undefined;
+  const next = idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
 
   return (
     <PageContainer>
       <Link
-        to="/"
+        to="/modules"
         data-testid="category-back"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All categories
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All practice modules
       </Link>
 
       <PageHeader
@@ -79,6 +87,33 @@ export default function CategoryPage() {
           </Badge>
         }
       />
+
+      {/* Domain context + sibling categories */}
+      {domain ? (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card/50 p-3" data-testid="category-domain">
+          <span className={cn('flex h-8 w-8 items-center justify-center rounded-lg', domain.accent)}>
+            <domain.icon className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <span className="text-sm font-semibold text-foreground">{domain.label}</span>
+          <span className="text-muted-foreground/40">·</span>
+          <div className="flex flex-wrap gap-1.5">
+            {siblings.map((c) => (
+              <Link
+                key={c}
+                to={`/category/${categorySlug(c)}`}
+                className={cn(
+                  'rounded-full px-2.5 py-1 text-xs font-medium transition-colors',
+                  c === category
+                    ? 'bg-primary/10 text-primary'
+                    : 'bg-muted text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {c}
+              </Link>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
@@ -97,7 +132,7 @@ export default function CategoryPage() {
         <p className="rounded-xl border border-dashed py-12 text-center text-sm text-muted-foreground">
           No modules match “{debounced}”.
         </p>
-      ) : (
+      ) : searching ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="category-grid">
           {filtered.map((module, i) => (
             <ScrollReveal key={module.id} delay={i * 0.04}>
@@ -105,13 +140,30 @@ export default function CategoryPage() {
             </ScrollReveal>
           ))}
         </div>
+      ) : (
+        <div className="space-y-6" data-testid="category-grid">
+          {bands.map((band) => (
+            <div key={band.level} className="space-y-3" data-testid={`category-band-${band.level}`}>
+              <div className="flex items-center gap-2 border-b pb-2">
+                <LevelPill level={band.level} />
+                <span className="text-xs text-muted-foreground">
+                  {band.modules.length} {band.modules.length === 1 ? 'module' : 'modules'}
+                </span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {band.modules.map((module, i) => (
+                  <ScrollReveal key={module.id} delay={i * 0.04}>
+                    <ModuleCard module={module} />
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
-      {/* Jump to an adjacent category */}
-      <nav
-        aria-label="Adjacent categories"
-        className="flex items-center justify-between gap-3 border-t pt-6"
-      >
+      {/* Move between sibling categories in this domain */}
+      <nav aria-label="Adjacent categories" className="flex items-center justify-between gap-3 border-t pt-6">
         {prev ? (
           <Button asChild variant="ghost" className="gap-2">
             <Link to={`/category/${categorySlug(prev)}`} data-testid="category-prev">

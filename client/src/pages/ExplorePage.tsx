@@ -1,20 +1,41 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Boxes, GraduationCap, Puzzle, Workflow } from 'lucide-react';
+import { ArrowRight, GraduationCap, Boxes, Puzzle, Workflow, Chrome, Drama } from 'lucide-react';
 import { PageContainer } from '@/components/common/PageContainer';
 import { PageHeader } from '@/components/common/PageHeader';
 import { ScrollReveal } from '@/components/common/ScrollReveal';
-import { MODULES, getCategoriesBySection } from '@/config/modules';
+import { ProgressRing } from '@/components/common/ProgressRing';
+import { CountPill } from '@/components/layout/nav-primitives';
+import {
+  buildLearningTree,
+  buildPracticeTree,
+  CHALLENGE_CATEGORIES,
+  WORKFLOW_CATEGORIES,
+  getModulesByCategory,
+  type LearningCategory,
+} from '@/config/navigation';
 import { LEARNING_TRACKS, TOTAL_LESSONS } from '@/config/learning';
+import { MODULES } from '@/config/modules';
+import { useLearningProgress, useModuleProgress } from '@/hooks/useProgress';
 import { cn } from '@/lib/utils';
 
-const PRACTICE_MODULE_COUNT = MODULES.filter(
+const TOOL_ICON: Record<LearningCategory, typeof Chrome> = { Selenium: Chrome, Playwright: Drama };
+
+const PRACTICE_COUNT = MODULES.filter(
   (m) => m.category !== 'Async Challenges' && m.category !== 'Business Workflows',
 ).length;
-const CHALLENGE_COUNT = MODULES.filter((m) => m.category === 'Async Challenges').length;
-const WORKFLOW_COUNT = MODULES.filter((m) => m.category === 'Business Workflows').length;
-const PRACTICE_CATEGORY_COUNT = getCategoriesBySection('modules').length;
+const CHALLENGE_COUNT = CHALLENGE_CATEGORIES.reduce((s, c) => s + getModulesByCategory(c).length, 0);
+const WORKFLOW_COUNT = WORKFLOW_CATEGORIES.reduce((s, c) => s + getModulesByCategory(c).length, 0);
 
-interface Choice {
+function PrimaryCard({
+  to,
+  icon: Icon,
+  title,
+  description,
+  meta,
+  cta,
+  testId,
+  pct,
+}: {
   to: string;
   icon: typeof GraduationCap;
   title: string;
@@ -22,58 +43,12 @@ interface Choice {
   meta: string;
   cta: string;
   testId: string;
-}
-
-const PRIMARY: Choice[] = [
-  {
-    to: '/learning',
-    icon: GraduationCap,
-    title: 'Learning Modules',
-    description:
-      'Guided, step-by-step courses with runnable programs — Selenium, TestNG, Cucumber and a full framework, from beginner to advanced.',
-    meta: `${LEARNING_TRACKS.length} courses · ${TOTAL_LESSONS} lessons`,
-    cta: 'Start learning',
-    testId: 'explore-learning',
-  },
-  {
-    to: '/modules',
-    icon: Boxes,
-    title: 'Practice Modules',
-    description:
-      'Hands-on sandbox of real controls with stable data-testid hooks — buttons, forms, tables, dialogs and more to automate.',
-    meta: `${PRACTICE_MODULE_COUNT} modules · ${PRACTICE_CATEGORY_COUNT} categories`,
-    cta: 'Start practising',
-    testId: 'explore-practice',
-  },
-];
-
-const SECONDARY: Choice[] = [
-  {
-    to: '/challenges',
-    icon: Puzzle,
-    title: 'Challenges',
-    description: 'Deliberately tricky, flaky-by-design scenarios that stress your selectors and waits.',
-    meta: `${CHALLENGE_COUNT} challenges`,
-    cta: 'Open challenges',
-    testId: 'explore-challenges',
-  },
-  {
-    to: '/workflows',
-    icon: Workflow,
-    title: 'Workflows',
-    description: 'Realistic, end-to-end journeys across full application flows (sign-in required).',
-    meta: `${WORKFLOW_COUNT} workflows`,
-    cta: 'Open workflows',
-    testId: 'explore-workflows',
-  },
-];
-
-function PrimaryCard({ choice }: { choice: Choice }) {
-  const Icon = choice.icon;
+  pct: number;
+}) {
   return (
     <Link
-      to={choice.to}
-      data-testid={choice.testId}
+      to={to}
+      data-testid={testId}
       className={cn(
         'group relative flex h-full flex-col gap-4 overflow-hidden rounded-2xl border bg-card p-6 shadow-card transition-all',
         'hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-apple-lg',
@@ -84,20 +59,20 @@ function PrimaryCard({ choice }: { choice: Choice }) {
         aria-hidden="true"
         className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-primary/10 blur-2xl transition-opacity group-hover:opacity-80"
       />
-      <span className="brand-icon flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-        <Icon className="h-7 w-7" aria-hidden="true" />
-      </span>
+      <div className="flex items-start justify-between">
+        <span className="brand-icon flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+          <Icon className="h-7 w-7" aria-hidden="true" />
+        </span>
+        {pct > 0 ? <ProgressRing value={pct} size={40} showLabel /> : null}
+      </div>
       <div className="space-y-1.5">
-        <h2 className="text-xl font-bold tracking-tight text-foreground">{choice.title}</h2>
-        <p className="text-sm text-muted-foreground">{choice.description}</p>
+        <h2 className="text-xl font-bold tracking-tight text-foreground">{title}</h2>
+        <p className="text-sm text-muted-foreground">{description}</p>
       </div>
       <div className="mt-auto flex items-center justify-between gap-3 pt-2">
-        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-          <BookOpen className="h-3.5 w-3.5" aria-hidden="true" />
-          {choice.meta}
-        </span>
+        <span className="text-xs font-medium text-muted-foreground">{meta}</span>
         <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
-          {choice.cta}
+          {cta}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
         </span>
       </div>
@@ -105,66 +80,151 @@ function PrimaryCard({ choice }: { choice: Choice }) {
   );
 }
 
-function SecondaryCard({ choice }: { choice: Choice }) {
-  const Icon = choice.icon;
-  return (
-    <Link
-      to={choice.to}
-      data-testid={choice.testId}
-      className={cn(
-        'group flex items-center gap-4 rounded-xl border bg-card p-4 shadow-card transition-all',
-        'hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-apple-lg',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-      )}
-    >
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-        <Icon className="h-5 w-5" aria-hidden="true" />
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="font-semibold text-foreground">{choice.title}</h3>
-          <span className="shrink-0 text-xs text-muted-foreground">{choice.meta}</span>
-        </div>
-        <p className="truncate text-sm text-muted-foreground">{choice.description}</p>
-      </div>
-      <ArrowRight
-        className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
-        aria-hidden="true"
-      />
-    </Link>
-  );
-}
-
-/**
- * Module hub — lets the visitor choose between the guided Learning courses and
- * the hands-on Practice sandbox before drilling in.
- */
 export default function ExplorePage() {
+  const learning = useLearningProgress();
+  const modules = useModuleProgress();
+  const learningTree = buildLearningTree();
+  const practiceTree = buildPracticeTree();
+
   return (
     <PageContainer>
       <PageHeader
-        title="What would you like to do?"
-        description="Pick a path: follow the guided Learning courses, or jump straight into the hands-on Practice modules."
+        title="Explore the lab"
+        description="Choose a path: follow the guided courses, drill on hands-on modules, or take on the tricky stuff. Everything is organised so you always know where you are."
       />
 
+      {/* Primary paths */}
       <div className="grid gap-4 sm:grid-cols-2" data-testid="explore-primary">
-        {PRIMARY.map((choice, index) => (
-          <ScrollReveal key={choice.to} delay={index * 0.06}>
-            <PrimaryCard choice={choice} />
-          </ScrollReveal>
-        ))}
+        <ScrollReveal>
+          <PrimaryCard
+            to="/learning"
+            icon={GraduationCap}
+            title="Learning Modules"
+            description="Guided, step-by-step courses with runnable programs — Selenium (Java) and Playwright (TypeScript), beginner to expert."
+            meta={`${LEARNING_TRACKS.length} courses · ${TOTAL_LESSONS} lessons`}
+            cta="Start learning"
+            testId="explore-learning"
+            pct={learning.pct}
+          />
+        </ScrollReveal>
+        <ScrollReveal delay={0.06}>
+          <PrimaryCard
+            to="/modules"
+            icon={Boxes}
+            title="Practice Modules"
+            description="A hands-on sandbox of real controls with stable data-testid hooks — buttons, forms, tables, dialogs and far more."
+            meta={`${PRACTICE_COUNT} modules · ${practiceTree.length} domains`}
+            cta="Start practising"
+            testId="explore-practice"
+            pct={modules.pct}
+          />
+        </ScrollReveal>
       </div>
 
+      {/* Learn by tool */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/80">
-          Or keep exploring
-        </h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/80">Learn by tool</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {learningTree.map((tool, i) => {
+            const Icon = TOOL_ICON[tool.category];
+            return (
+              <ScrollReveal key={tool.category} delay={i * 0.05}>
+                <Link
+                  to={`/learning#${tool.category.toLowerCase()}`}
+                  data-testid={`explore-tool-${tool.category.toLowerCase()}`}
+                  className="group flex h-full items-center gap-4 rounded-xl border bg-card p-4 shadow-card transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-apple-lg"
+                >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-foreground">{tool.category}</h3>
+                    <p className="text-xs text-muted-foreground">
+                      {tool.tracks.length} courses · {tool.lessonCount} lessons · {tool.levels.length} levels
+                    </p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
+                </Link>
+              </ScrollReveal>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Practice by domain */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/80">Practice by domain</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="explore-domains">
+          {practiceTree.map((node, i) => {
+            const Icon = node.domain.icon;
+            return (
+              <ScrollReveal key={node.domain.id} delay={i * 0.05}>
+                <div className="flex h-full flex-col gap-3 rounded-xl border bg-card p-5 shadow-card">
+                  <div className="flex items-center gap-3">
+                    <span className={cn('flex h-11 w-11 items-center justify-center rounded-xl', node.domain.accent)}>
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <div>
+                      <h3 className="font-semibold text-foreground">{node.domain.label}</h3>
+                      <p className="text-xs text-muted-foreground">{node.domain.tagline}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    {node.categories.map((cat) => (
+                      <Link
+                        key={cat.slug}
+                        to={`/category/${cat.slug}`}
+                        data-testid={`explore-category-${cat.slug}`}
+                        className="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                      >
+                        <span className="truncate">{cat.category}</span>
+                        <CountPill>{cat.modules.length}</CountPill>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </ScrollReveal>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Go deeper */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/80">Go deeper</h2>
         <div className="grid gap-4 sm:grid-cols-2" data-testid="explore-secondary">
-          {SECONDARY.map((choice, index) => (
-            <ScrollReveal key={choice.to} delay={index * 0.06}>
-              <SecondaryCard choice={choice} />
-            </ScrollReveal>
-          ))}
+          <ScrollReveal>
+            <Link
+              to="/challenges"
+              data-testid="explore-challenges"
+              className="group flex h-full items-center gap-4 rounded-xl border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-apple-lg"
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <Puzzle className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-semibold text-foreground">Challenges</h3>
+                <p className="text-xs text-muted-foreground">Deliberately flaky, timing-driven scenarios that stress your waits and selectors.</p>
+              </div>
+              <CountPill>{CHALLENGE_COUNT}</CountPill>
+            </Link>
+          </ScrollReveal>
+          <ScrollReveal delay={0.06}>
+            <Link
+              to="/workflows"
+              data-testid="explore-workflows"
+              className="group flex h-full items-center gap-4 rounded-xl border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-apple-lg"
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400">
+                <Workflow className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-semibold text-foreground">Workflows</h3>
+                <p className="text-xs text-muted-foreground">Realistic, end-to-end journeys across full application flows (sign-in required).</p>
+              </div>
+              <CountPill>{WORKFLOW_COUNT}</CountPill>
+            </Link>
+          </ScrollReveal>
         </div>
       </section>
     </PageContainer>

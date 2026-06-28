@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Clock, Star, GraduationCap } from 'lucide-react';
+import { Search, Clock, Star, GraduationCap, Compass } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { MODULES, MODULE_CATEGORIES, searchModules } from '@/config/modules';
 import { LEARNING_TRACKS, trackPath, lessonPath } from '@/config/learning';
+import { PRIMARY_DESTINATIONS, PRACTICE_DOMAINS, categorySlug } from '@/config/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { toggleFavorite } from '@/store/prefsSlice';
 import { cn } from '@/lib/utils';
@@ -15,7 +16,7 @@ interface CommandPaletteProps {
 }
 
 interface Entry {
-  kind: 'module' | 'category' | 'learning';
+  kind: 'module' | 'category' | 'learning' | 'nav';
   id: string;
   title: string;
   description: string;
@@ -132,6 +133,37 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       const items = source.filter((m) => m.category === category).map(toModuleEntry);
       if (items.length > 0) result.push({ header: category, items });
     }
+
+    // Quick navigation to top-level destinations and practice domains.
+    const navItems: Entry[] = [];
+    for (const d of PRIMARY_DESTINATIONS) {
+      if (d.adminOnly) continue;
+      if (!needle || d.label.toLowerCase().includes(needle) || d.description.toLowerCase().includes(needle)) {
+        navItems.push({
+          kind: 'nav',
+          id: `go-${d.id}`,
+          title: d.label,
+          description: d.description,
+          meta: 'Go to',
+          path: d.to,
+          Icon: d.icon,
+        });
+      }
+    }
+    for (const domain of PRACTICE_DOMAINS) {
+      if (!needle || domain.label.toLowerCase().includes(needle) || domain.tagline.toLowerCase().includes(needle)) {
+        navItems.push({
+          kind: 'nav',
+          id: `go-domain-${domain.id}`,
+          title: domain.label,
+          description: domain.tagline,
+          meta: 'Domain',
+          path: `/category/${categorySlug(domain.categories[0]!)}`,
+          Icon: domain.icon,
+        });
+      }
+    }
+    if (navItems.length > 0) result.unshift({ header: 'Jump to', headerIcon: Compass, items: navItems });
 
     return result;
   }, [query, recentIds]);
