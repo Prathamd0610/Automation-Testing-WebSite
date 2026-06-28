@@ -1,6 +1,8 @@
 import type { LucideIcon } from 'lucide-react';
 import { Chrome, ListChecks, Sprout, Layers3, Rocket } from 'lucide-react';
 import { MODULES, type ModuleMeta, type Difficulty } from './modules';
+import { seleniumRealWorldTracks } from './learning-selenium-realworld';
+import { playwrightTracks } from './learning-playwright';
 
 /**
  * ──────────────────────────────────────────────────────────────────────────
@@ -37,8 +39,17 @@ export interface Lesson {
   practice?: string[];
 }
 
+/**
+ * Top-level grouping for the Learning catalog. Tracks are segregated into
+ * tool families so learners can pick a stack (Selenium vs Playwright) first,
+ * then drill into beginner → expert tracks within it.
+ */
+export type LearningCategory = 'Selenium' | 'Playwright';
+
 export interface LearningTrack {
   id: string;
+  /** Tool family this track belongs to (drives catalog/sidebar segregation). */
+  category: LearningCategory;
   title: string;
   subtitle: string;
   description: string;
@@ -54,6 +65,7 @@ export interface LearningTrack {
 
 const seleniumJava: LearningTrack = {
   id: 'selenium-java',
+  category: 'Selenium',
   title: 'Selenium WebDriver with Java',
   subtitle: 'Automate the browser from zero',
   description:
@@ -325,6 +337,22 @@ form .field input            /* descendant */`,
           title: 'Prefer data-testid',
           text: 'Designers and developers change classes and layout often, which breaks brittle selectors. A dedicated `data-testid` attribute is stable on purpose — this practice site adds them to every control.',
         },
+        { kind: 'heading', text: 'Real-life example: locating on google.com' },
+        {
+          kind: 'paragraph',
+          text: 'Open **google.com** and inspect the search box. Its class (`gLFyf`) is minified and changes between releases, but `name="q"` has been stable for years. This is exactly the judgement call you make on every real site — anchor on the **stable** attribute, not the pretty one.',
+        },
+        {
+          kind: 'code',
+          language: 'java',
+          code: `// ❌ Brittle: minified class breaks on the next Google redesign
+driver.findElement(By.cssSelector("input.gLFyf"));
+
+// ✅ Stable: the search field's name attribute rarely changes
+WebElement search = driver.findElement(By.name("q"));
+search.sendKeys("selenium webdriver");
+search.sendKeys(Keys.ENTER);`,
+        },
         { kind: 'heading', text: 'XPath when you need text or axes' },
         {
           kind: 'code',
@@ -385,6 +413,24 @@ boolean usable = submit.isEnabled();`,
           tone: 'note',
           title: 'sendKeys with special keys',
           text: 'Use the `Keys` enum for non-text keys, e.g. `email.sendKeys(Keys.ENTER)` to submit, or `Keys.chord(Keys.CONTROL, "a")` to select all.',
+        },
+        { kind: 'heading', text: 'Real-life example: a google.com search' },
+        {
+          kind: 'paragraph',
+          text: 'These same methods drive any site. On **google.com**, typing a query and pressing Enter is just `sendKeys` plus a key press — the bread-and-butter of UI automation.',
+        },
+        {
+          kind: 'code',
+          language: 'java',
+          code: `driver.get("https://www.google.com");
+WebElement box = driver.findElement(By.name("q"));
+box.clear();
+box.sendKeys("selenium webdriver tutorial");
+box.sendKeys(Keys.ENTER);
+
+// Read the result stats text the page shows after searching
+String stats = driver.findElement(By.id("result-stats")).getText();
+System.out.println(stats);   // e.g. "About 12,300,000 results"`,
         },
         { kind: 'heading', text: 'Try it on this site' },
         {
@@ -477,6 +523,23 @@ WebElement el = new FluentWait<>(driver)
     .pollingEvery(Duration.ofMillis(500))
     .ignoring(NoSuchElementException.class)
     .until(d -> d.findElement(By.id("late-element")));`,
+        },
+        { kind: 'heading', text: 'Real-life example: waiting on google.com results' },
+        {
+          kind: 'paragraph',
+          text: 'After you submit a search on **google.com**, results render asynchronously. A fixed sleep is wasteful and flaky; an explicit wait for the results container is precise — it continues the instant the page is ready.',
+        },
+        {
+          kind: 'code',
+          language: 'java',
+          code: `driver.get("https://www.google.com");
+driver.findElement(By.name("q")).sendKeys("webdriver waits" + Keys.ENTER);
+
+// Wait for the search results region, not a guessed number of seconds
+new WebDriverWait(driver, Duration.ofSeconds(10)).until(
+    ExpectedConditions.visibilityOfElementLocated(By.id("search")));
+
+System.out.println("Results loaded: " + driver.getTitle());`,
         },
         {
           kind: 'callout',
@@ -667,6 +730,7 @@ public void userCanLogIn() {
 
 const testng: LearningTrack = {
   id: 'testng',
+  category: 'Selenium',
   title: 'TestNG Test Framework',
   subtitle: 'Structure, run and report your tests',
   description:
@@ -1102,6 +1166,7 @@ public class ScreenshotListener implements ITestListener {
 
 const cucumber: LearningTrack = {
   id: 'cucumber',
+  category: 'Selenium',
   title: 'Cucumber BDD with Java',
   subtitle: 'Describe behaviour in plain English',
   description:
@@ -1545,6 +1610,7 @@ public class TestRunner extends AbstractTestNGCucumberTests {
 
 const seleniumFramework: LearningTrack = {
   id: 'selenium-framework',
+  category: 'Selenium',
   title: 'Build a Selenium Java Framework',
   subtitle: 'Maven · Selenium · TestNG · Cucumber · CI',
   description:
@@ -2666,6 +2732,7 @@ jobs:
 
 const advancedSelenium: LearningTrack = {
   id: 'advanced-selenium',
+  category: 'Selenium',
   title: 'Advanced Selenium Automation',
   subtitle: 'Grid, CDP, patterns & hybrid testing',
   description:
@@ -3266,7 +3333,32 @@ export const LEARNING_TRACKS: LearningTrack[] = [
   cucumber,
   seleniumFramework,
   advancedSelenium,
+  ...seleniumRealWorldTracks,
+  ...playwrightTracks,
 ];
+
+/** Catalog categories in display order. */
+export const LEARNING_CATEGORIES: LearningCategory[] = ['Selenium', 'Playwright'];
+
+export const CATEGORY_BLURB: Record<LearningCategory, string> = {
+  Selenium:
+    'The W3C WebDriver standard with Java — from your first browser launch to Grid, CDP, design patterns and the daily problems senior SDETs solve.',
+  Playwright:
+    'Microsoft’s modern, fast, auto-waiting framework with TypeScript — from your first test to network mocking, auth reuse, visual testing, CI sharding and expert real-world patterns.',
+};
+
+/** All tracks in a given tool family (Selenium / Playwright). */
+export function getTracksByCategory(category: LearningCategory): LearningTrack[] {
+  return LEARNING_TRACKS.filter((t) => t.category === category);
+}
+
+/** Tracks in a family at a given difficulty level. */
+export function getTracksByCategoryAndLevel(
+  category: LearningCategory,
+  level: Difficulty,
+): LearningTrack[] {
+  return LEARNING_TRACKS.filter((t) => t.category === category && t.level === level);
+}
 
 export function getTrackById(id: string): LearningTrack | undefined {
   return LEARNING_TRACKS.find((t) => t.id === id);

@@ -33,7 +33,7 @@ import { CommandPalette } from './CommandPalette';
 import { FeedbackDialog } from '@/components/common/FeedbackDialog';
 import { UiModeToggle } from '@/components/common/UiModeToggle';
 import { MODULE_CATEGORIES, getModulesByCategory, categorySlug } from '@/config/modules';
-import { LEARNING_TRACKS, trackPath } from '@/config/learning';
+import { LEARNING_CATEGORIES, getTracksByCategory, trackPath } from '@/config/learning';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
@@ -362,16 +362,25 @@ export function ModernNav() {
                       <span className="truncate">All courses</span>
                     </Link>
                   </li>
-                  {LEARNING_TRACKS.map((track) => (
-                    <li key={track.id}>
-                      <Link
-                        to={trackPath(track.id)}
-                        data-testid={`nav-learning-${track.id}`}
-                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
-                      >
-                        <track.icon className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
-                        <span className="truncate">{track.title}</span>
-                      </Link>
+                  {LEARNING_CATEGORIES.map((category) => (
+                    <li key={category}>
+                      <p className="mb-0.5 mt-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                        {category}
+                      </p>
+                      <ul>
+                        {getTracksByCategory(category).map((track) => (
+                          <li key={track.id}>
+                            <Link
+                              to={trackPath(track.id)}
+                              data-testid={`nav-learning-${track.id}`}
+                              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
+                            >
+                              <track.icon className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
+                              <span className="truncate">{track.title}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     </li>
                   ))}
                 </ul>

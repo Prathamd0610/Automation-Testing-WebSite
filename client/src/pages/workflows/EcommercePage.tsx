@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Minus, PackageCheck, Plus, ShoppingBag, ShoppingCart, Star } from 'lucide-react';
+import { Minus, PackageCheck, Plus, ShoppingBag, ShoppingCart, Star, Tag, Truck } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { PageContainer, Section } from '@/components/common/PageContainer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -16,7 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { createResourceApi } from '@/services/resourceApi';
 import { getErrorMessage } from '@/services/apiClient';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { toast } from '@/components/ui/sonner';
 import type { Product } from '@/types/api';
 
@@ -31,6 +32,8 @@ interface ConfirmedOrder {
 }
 
 const TAX_RATE = 0.08;
+const COUPONS: Record<string, number> = { SAVE10: 0.1, WELCOME15: 0.15 };
+const SHIPPING: Record<'standard' | 'express', number> = { standard: 0, express: 9.99 };
 
 export default function EcommercePage() {
   const api = useMemo(() => createResourceApi<Product>('/products'), []);
@@ -40,6 +43,9 @@ export default function EcommercePage() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<ConfirmedOrder | null>(null);
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; rate: number } | null>(null);
+  const [shipping, setShipping] = useState<'standard' | 'express'>('standard');
 
   useEffect(() => {
     let cancelled = false;
@@ -90,15 +96,34 @@ export default function EcommercePage() {
     () => cart.reduce((sum, item) => sum + item.product.price * item.qty, 0),
     [cart],
   );
-  const tax = subtotal * TAX_RATE;
-  const total = subtotal + tax;
+  const discount = appliedCoupon ? subtotal * appliedCoupon.rate : 0;
+  const discountedSubtotal = subtotal - discount;
+  const tax = discountedSubtotal * TAX_RATE;
+  const shippingCost = cart.length > 0 ? SHIPPING[shipping] : 0;
+  const total = discountedSubtotal + tax + shippingCost;
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  const applyCoupon = () => {
+    const code = couponInput.trim().toUpperCase();
+    if (!code) return;
+    const rate = COUPONS[code];
+    if (rate) {
+      setAppliedCoupon({ code, rate });
+      toast.success(`Coupon ${code} applied`);
+    } else {
+      setAppliedCoupon(null);
+      toast.error('Invalid coupon code');
+    }
+  };
 
   const handleCheckout = () => {
     if (cart.length === 0) return;
     const orderNumber = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
     setConfirmedOrder({ orderNumber, total });
     setCart([]);
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setShipping('standard');
     setCartOpen(false);
     toast.success(`Order ${orderNumber} placed`);
   };
@@ -279,14 +304,78 @@ export default function EcommercePage() {
                   </li>
                 ))}
               </ul>
+
+              <div className="space-y-3 border-t pt-3">
+                <div className="flex items-end gap-2">
+                  <div className="flex-1 space-y-1">
+                    <label htmlFor="coupon" className="text-xs font-medium text-muted-foreground">
+                      Coupon code
+                    </label>
+                    <Input
+                      id="coupon"
+                      value={couponInput}
+                      placeholder="Try SAVE10 or WELCOME15"
+                      data-testid="coupon-input"
+                      onChange={(event) => setCouponInput(event.target.value)}
+                    />
+                  </div>
+                  <Button variant="outline" data-testid="coupon-apply" onClick={applyCoupon}>
+                    <Tag className="h-4 w-4" aria-hidden="true" /> Apply
+                  </Button>
+                </div>
+                {appliedCoupon ? (
+                  <p className="text-xs font-medium text-success" data-testid="coupon-applied">
+                    {appliedCoupon.code} applied — {Math.round(appliedCoupon.rate * 100)}% off
+                  </p>
+                ) : null}
+
+                <div>
+                  <p className="mb-1 text-xs font-medium text-muted-foreground">Shipping method</p>
+                  <div className="grid grid-cols-2 gap-2" data-testid="shipping-options">
+                    {(['standard', 'express'] as const).map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        data-testid={`shipping-${opt}`}
+                        aria-pressed={shipping === opt}
+                        onClick={() => setShipping(opt)}
+                        className={cn(
+                          'rounded-lg border px-3 py-2 text-left text-sm transition-colors',
+                          shipping === opt ? 'border-primary bg-primary/5' : 'border-border hover:bg-accent',
+                        )}
+                      >
+                        <span className="flex items-center gap-1.5 font-medium capitalize text-foreground">
+                          <Truck className="h-3.5 w-3.5" aria-hidden="true" /> {opt}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {SHIPPING[opt] === 0 ? 'Free · 5–7 days' : `${formatCurrency(SHIPPING[opt])} · 1–2 days`}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <dl className="space-y-1 border-t pt-3 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Subtotal</dt>
                   <dd data-testid="cart-subtotal">{formatCurrency(subtotal)}</dd>
                 </div>
+                {discount > 0 ? (
+                  <div className="flex justify-between text-success">
+                    <dt>Discount</dt>
+                    <dd data-testid="cart-discount">−{formatCurrency(discount)}</dd>
+                  </div>
+                ) : null}
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Tax (8%)</dt>
                   <dd data-testid="cart-tax">{formatCurrency(tax)}</dd>
+                </div>
+                <div className="flex justify-between">
+                  <dt className="text-muted-foreground">Shipping</dt>
+                  <dd data-testid="cart-shipping">
+                    {shippingCost === 0 ? 'Free' : formatCurrency(shippingCost)}
+                  </dd>
                 </div>
                 <div className="flex justify-between text-base font-semibold text-foreground">
                   <dt>Total</dt>

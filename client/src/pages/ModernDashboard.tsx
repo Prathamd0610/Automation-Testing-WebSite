@@ -87,17 +87,21 @@ function Hero() {
       </p>
       <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <Link
-          to="/explore"
+          to="/learning"
+          data-testid="hero-start-learning"
           className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[hsl(214_85%_50%)] px-6 py-3 text-sm font-semibold text-white shadow-apple-lg transition-transform hover:-translate-y-0.5"
         >
-          Browse modules
+          <GraduationCap className="h-4 w-4" aria-hidden="true" />
+          Start learning
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
         </Link>
         <Link
-          to="/modules/inputs"
+          to="/modules"
+          data-testid="hero-browse-practice"
           className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/60 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur transition-colors hover:bg-card"
         >
-          Quick start
+          <Boxes className="h-4 w-4" aria-hidden="true" />
+          Browse practice modules
         </Link>
       </div>
     </motion.div>
@@ -259,8 +263,8 @@ export function ModernDashboard() {
                   </h2>
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {LEARNING_TRACKS.length} beginner courses · {TOTAL_LESSONS} guided lessons on
-                  Selenium, TestNG and Cucumber.
+                  {LEARNING_TRACKS.length} courses · {TOTAL_LESSONS} guided lessons across Selenium
+                  and Playwright — from first test to expert level.
                 </p>
               </div>
               <Link

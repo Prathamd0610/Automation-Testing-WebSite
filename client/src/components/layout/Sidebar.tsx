@@ -19,7 +19,8 @@ import {
 } from 'lucide-react';
 import { MODULE_CATEGORIES, getModulesByCategory, categorySlug } from '@/config/modules';
 import type { Difficulty } from '@/config/modules';
-import { LEARNING_TRACKS, trackPath } from '@/config/learning';
+import { LEARNING_CATEGORIES, getTracksByCategory, trackPath } from '@/config/learning';
+import type { LearningCategory } from '@/config/learning';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useAuth } from '@/hooks/useAuth';
 import { setSidebar } from '@/store/uiSlice';
@@ -212,6 +213,61 @@ function CategoryGroup({ category }: { category: (typeof MODULE_CATEGORIES)[numb
   );
 }
 
+/**
+ * A learning tool-family (Selenium / Playwright) — the "sub-heading" level
+ * nested inside Learning Modules. Collapsible, with its tracks under a guide line.
+ */
+function LearningCategoryGroup({ category }: { category: LearningCategory }) {
+  const slug = category.toLowerCase();
+  const tracks = getTracksByCategory(category);
+  const [open, toggle] = useCollapse(`learn-${slug}`, true);
+
+  if (tracks.length === 0) return null;
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={toggle}
+        aria-expanded={open}
+        aria-label={`${open ? 'Collapse' : 'Expand'} ${category}`}
+        data-testid={`group-learn-${slug}`}
+        className="flex w-full items-center gap-1 rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80 transition-colors hover:text-foreground"
+      >
+        <ChevronRight
+          className={cn('h-3.5 w-3.5 transition-transform', open ? 'rotate-90' : '')}
+          aria-hidden="true"
+        />
+        <span className="flex-1 truncate text-left">{category}</span>
+        <span className="shrink-0 rounded-full bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
+          {tracks.length}
+        </span>
+      </button>
+      {open ? (
+        <div className="ml-[15px] mt-0.5 space-y-0.5 border-l border-border/60 pl-2">
+          {tracks.map((track) => (
+            <NavItem
+              key={track.id}
+              to={trackPath(track.id)}
+              label={track.title}
+              icon={track.icon}
+              testId={`nav-learning-${track.id}`}
+              compact
+              trailing={
+                <span
+                  className={cn('h-2 w-2 shrink-0 rounded-full', LEVEL_DOT[track.level])}
+                  title={track.level}
+                  aria-hidden="true"
+                />
+              }
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 const ADMIN_ITEMS = [
   { id: 'admin', to: '/admin', label: 'Dashboard', icon: ShieldCheck, end: true },
   { id: 'admin-users', to: '/admin/users', label: 'Users & Roles', icon: Users },
@@ -315,22 +371,8 @@ export function Sidebar() {
               end
               compact
             />
-            {LEARNING_TRACKS.map((track) => (
-              <NavItem
-                key={track.id}
-                to={trackPath(track.id)}
-                label={track.title}
-                icon={track.icon}
-                testId={`nav-learning-${track.id}`}
-                compact
-                trailing={
-                  <span
-                    className={cn('h-2 w-2 shrink-0 rounded-full', LEVEL_DOT[track.level])}
-                    title={track.level}
-                    aria-hidden="true"
-                  />
-                }
-              />
+            {LEARNING_CATEGORIES.map((category) => (
+              <LearningCategoryGroup key={category} category={category} />
             ))}
           </SectionGroup>
 

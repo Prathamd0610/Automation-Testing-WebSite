@@ -46,6 +46,18 @@ const TabsPage = lazy(() => import('@/pages/modules/TabsPage'));
 const PaginationPage = lazy(() => import('@/pages/modules/PaginationPage'));
 const SearchFilterPage = lazy(() => import('@/pages/modules/SearchFilterPage'));
 const CanvasPage = lazy(() => import('@/pages/modules/CanvasPage'));
+const RatingPage = lazy(() => import('@/pages/modules/RatingPage'));
+const ColorPickerPage = lazy(() => import('@/pages/modules/ColorPickerPage'));
+const OtpInputPage = lazy(() => import('@/pages/modules/OtpInputPage'));
+const ContextMenuPage = lazy(() => import('@/pages/modules/ContextMenuPage'));
+const SortableListPage = lazy(() => import('@/pages/modules/SortableListPage'));
+const CarouselPage = lazy(() => import('@/pages/modules/CarouselPage'));
+const TreeViewPage = lazy(() => import('@/pages/modules/TreeViewPage'));
+const StepperPage = lazy(() => import('@/pages/modules/StepperPage'));
+const NotificationsPage = lazy(() => import('@/pages/modules/NotificationsPage'));
+const RichTextPage = lazy(() => import('@/pages/modules/RichTextPage'));
+const DownloadPage = lazy(() => import('@/pages/modules/DownloadPage'));
+const LazyImagesPage = lazy(() => import('@/pages/modules/LazyImagesPage'));
 
 // Challenges
 const NestedFramesPage = lazy(() => import('@/pages/modules/NestedFramesPage'));
@@ -148,6 +160,18 @@ export function AppRouter() {
         <Route path="modules/pagination" element={lazyElement(PaginationPage)} />
         <Route path="modules/search-filter" element={lazyElement(SearchFilterPage)} />
         <Route path="modules/canvas" element={lazyElement(CanvasPage)} />
+        <Route path="modules/rating" element={lazyElement(RatingPage)} />
+        <Route path="modules/color-picker" element={lazyElement(ColorPickerPage)} />
+        <Route path="modules/otp-input" element={lazyElement(OtpInputPage)} />
+        <Route path="modules/context-menu" element={lazyElement(ContextMenuPage)} />
+        <Route path="modules/sortable-list" element={lazyElement(SortableListPage)} />
+        <Route path="modules/carousel" element={lazyElement(CarouselPage)} />
+        <Route path="modules/tree-view" element={lazyElement(TreeViewPage)} />
+        <Route path="modules/stepper" element={lazyElement(StepperPage)} />
+        <Route path="modules/notifications" element={lazyElement(NotificationsPage)} />
+        <Route path="modules/rich-text" element={lazyElement(RichTextPage)} />
+        <Route path="modules/download" element={lazyElement(DownloadPage)} />
+        <Route path="modules/lazy-images" element={lazyElement(LazyImagesPage)} />
 
         <Route path="challenges/nested-frames" element={lazyElement(NestedFramesPage)} />
         <Route path="challenges/dynamic-ids" element={lazyElement(DynamicIdsPage)} />
