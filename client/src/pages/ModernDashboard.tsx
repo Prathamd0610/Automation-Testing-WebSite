@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { ModuleCard } from '@/components/common/ModuleCard';
 import { CategoryCard } from '@/components/common/CategoryCard';
 import { LearningTrackCard } from '@/components/common/LearningTrackCard';
+import { LearningTracksByCategory } from '@/components/common/LearningTracksByCategory';
 import { AdSlot } from '@/components/common/AdSlot';
 import { ScrollReveal } from '@/components/common/ScrollReveal';
 import { AnimatedCounter } from '@/components/common/AnimatedCounter';
@@ -276,13 +277,7 @@ export function ModernDashboard() {
               </Link>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {LEARNING_TRACKS.map((track, index) => (
-                <ScrollReveal key={track.id} delay={index * 0.05}>
-                  <LearningTrackCard track={track} />
-                </ScrollReveal>
-              ))}
-            </div>
+            <LearningTracksByCategory />
           </section>
 
           {/* Browse by category — pick a category to open its landing page.

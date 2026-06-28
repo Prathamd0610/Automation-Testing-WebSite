@@ -14,12 +14,13 @@ import { Input } from '@/components/ui/input';
 import { ModuleCard } from '@/components/common/ModuleCard';
 import { CategoryCard } from '@/components/common/CategoryCard';
 import { LearningTrackCard } from '@/components/common/LearningTrackCard';
+import { LearningTracksByCategory } from '@/components/common/LearningTracksByCategory';
 import { AdSlot } from '@/components/common/AdSlot';
 import { ScrollReveal } from '@/components/common/ScrollReveal';
 import { Parallax } from '@/components/common/Parallax';
 import { ModernDashboard } from '@/pages/ModernDashboard';
 import { MODULES, MODULE_CATEGORIES, searchModules } from '@/config/modules';
-import { LEARNING_TRACKS, TOTAL_LESSONS, searchLearningTracks } from '@/config/learning';
+import { TOTAL_LESSONS, searchLearningTracks } from '@/config/learning';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useAppSelector } from '@/store/hooks';
 
@@ -190,11 +191,7 @@ export default function DashboardPage() {
                 All courses <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {LEARNING_TRACKS.map((track) => (
-                <LearningTrackCard key={track.id} track={track} />
-              ))}
-            </div>
+            <LearningTracksByCategory />
           </section>
 
           <section className="space-y-4">

@@ -104,7 +104,7 @@
         <div class="logo">🧪</div>
         <h1>Automation Testing Practice Platform</h1>
         <p class="lead">A complete visual guide — every flow, screenshot &amp; diagram explained</p>
-        <p class="muted">MERN · React + TypeScript · Express · MongoDB · JWT · WebSockets &nbsp;•&nbsp; 28 practice modules · 5 learning courses (47 lessons)</p>
+        <p class="muted">MERN · React + TypeScript · Express · MongoDB · JWT · WebSockets &nbsp;•&nbsp; 40 practice modules · 18 learning courses (150 lessons) across Selenium &amp; Playwright</p>
       </header>
 
       <!-- HOW TO READ -->
@@ -122,6 +122,42 @@
           sidebar layout and a <strong>Modern</strong> floating-nav layout. Use the <code>Classic / Modern</code> toggle in the
           top bar to switch; your choice is remembered.
         </div>
+      </section>
+
+      <!-- VIDEO WALKTHROUGH -->
+      <section>
+        <h2>📹 Video Walkthroughs (front-end flow)</h2>
+        <p>
+          Two short screen recordings of the live application — <strong>one per interface</strong>. Both walk the same
+          journey (home → Learning catalogue with Selenium &amp; Playwright → a course → Practice modules → a live module),
+          so you can compare the two layouts and learn <strong>how to switch between them</strong>. They capture the
+          <strong>front end only</strong>, so no backend is needed to follow along.
+        </p>
+
+        <figure class="shot">
+          <figcaption class="muted" style="margin:0 0 .5rem">
+            <strong>① Classic (Old) UI</strong> — the sidebar layout. The clip ends by clicking the
+            <code>Classic | Modern</code> switch so you can see exactly how to change skins.
+          </figcaption>
+          <video controls preload="metadata" style="width:100%;border-radius:12px;border:1px solid #e5e7eb;background:#000">
+            <source src="guide-assets/app-flow-classic.webm" type="video/webm" />
+            Your browser can’t play embedded video — open <code>docs/guide-assets/app-flow-classic.webm</code> directly.
+          </video>
+        </figure>
+
+        <figure class="shot">
+          <figcaption class="muted" style="margin:0 0 .5rem">
+            <strong>② Modern (New) UI</strong> — the floating glass nav &amp; immersive home, walking the same flow.
+          </figcaption>
+          <video controls preload="metadata" style="width:100%;border-radius:12px;border:1px solid #e5e7eb;background:#000">
+            <source src="guide-assets/app-flow-modern.webm" type="video/webm" />
+            Your browser can’t play embedded video — open <code>docs/guide-assets/app-flow-modern.webm</code> directly.
+          </video>
+          <figcaption class="muted">
+            Recorded against the running client with Playwright (front-end only). Re-record any time with
+            <code>node e2e/record-flow.cjs</code> while the client dev server is running.
+          </figcaption>
+        </figure>
       </section>
 
       <!-- DEMO CREDENTIALS -->
@@ -157,6 +193,23 @@
       <!-- THE TWO INTERFACES -->
       <section>
         <h2>🖥️ The Two Interfaces</h2>
+        <p>
+          This is <strong>one application with two switchable skins</strong>. The <strong>Classic</strong> skin uses a
+          left sidebar; the <strong>Modern</strong> skin uses a floating glass nav with an immersive home. Both expose the
+          <em>same</em> routes, data and <code>data-testid</code> hooks — only the layout changes — so anything you learn or
+          automate works identically in either skin.
+        </p>
+        <div class="note">
+          <strong>🔁 How to switch between the two UIs</strong>
+          <ol style="margin:.5rem 0 .25rem 1.1rem">
+            <li>Find the segmented <code>Classic | Modern</code> switch in the <strong>top bar</strong>
+                (automation hook: <code>data-testid="ui-mode-toggle"</code>).</li>
+            <li><strong>Click it</strong> to flip skins — the whole app re-renders instantly into the other layout.</li>
+            <li>Your choice is <strong>persisted in local storage</strong>, so you stay on your preferred skin next visit.</li>
+          </ol>
+          On narrow screens the switch lives inside the mobile menu. Tip: the Modern home is the default; click
+          <code>Classic</code> once to get the sidebar layout shown below.
+        </div>
 
         <h3>Classic skin — home &amp; sidebar</h3>
         <figure class="shot">
@@ -176,7 +229,7 @@
             <ol class="legend">
               <li><span class="n">1</span><span><strong>UI skin toggle</strong> — switch between the Classic and Modern layouts at any time.</span></li>
               <li><span class="n">2</span><span><strong>Primary calls to action</strong> — <em>Start learning</em> opens the courses; <em>Browse practice</em> opens the practice sandbox.</span></li>
-              <li><span class="n">3</span><span><strong>Live counters</strong> — 28 practice modules · 7 categories · 47 learning lessons · 11 async challenges · 4 workflows. These are computed from the config, so they’re always current.</span></li>
+              <li><span class="n">3</span><span><strong>Live counters</strong> — 40 practice modules · 7 categories · 150 learning lessons · 11 async challenges · 4 workflows. These are computed from the config, so they’re always current.</span></li>
             </ol>
           </figcaption>
         </figure>
@@ -198,7 +251,7 @@
             <ol class="legend">
               <li><span class="n">1</span><span><strong>Learning Modules</strong> (heading, level 1) — a bold, icon-chipped section you can collapse.</span></li>
               <li><span class="n">2</span><span><strong>Practice Modules</strong> (heading, level 1) — the hands-on sandbox, also collapsible.</span></li>
-              <li><span class="n">3</span><span><strong>Categories</strong> (sub-headings, level 2) — uppercase labels with live count badges (Form Controls 9, Interactions 4…). Each expands to reveal its modules (level 3).</span></li>
+              <li><span class="n">3</span><span><strong>Categories</strong> (sub-headings, level 2) — uppercase labels with live count badges (Form Controls 12, Interactions 6…). Each expands to reveal its modules (level 3).</span></li>
             </ol>
           </figcaption>
         </figure>
@@ -328,9 +381,12 @@ sequenceDiagram
       <section>
         <h2>🎓 Learning Modules Flow <span class="badge pub">PREVIEW: PUBLIC</span> <span class="badge lock">CONTENT: LOGIN</span></h2>
         <p>
-          The Learning area teaches automation step by step — Selenium, TestNG, Cucumber, building a full framework, and
-          advanced techniques. <strong>Anyone can browse</strong> the course catalogue and every lesson’s name &amp; summary;
-          <strong>reading a full lesson requires signing in</strong>, so the content stays gated while discovery stays open.
+          The Learning area teaches automation step by step across <strong>two full stacks</strong> —
+          <strong>Selenium</strong> (Java: WebDriver, TestNG, Cucumber, a full framework and advanced techniques) and
+          <strong>Playwright</strong> (TypeScript: from your first test to network mocking, CI and expert patterns).
+          The catalogue is segregated by stack, then by level. <strong>Anyone can browse</strong> the catalogue and every
+          lesson’s name &amp; summary; <strong>reading a full lesson requires signing in</strong>, so the content stays gated
+          while discovery stays open.
         </p>
         <pre class="mermaid diagram">
 flowchart TD
@@ -356,7 +412,7 @@ flowchart TD
           </div>
           <figcaption>
             <ol class="legend">
-              <li><span class="n">1</span><span><strong>Difficulty groups</strong> — courses are split into <span class="badge beg">Beginner</span> <span class="badge int">Intermediate</span> <span class="badge adv">Advanced</span> so learners start at the right level.</span></li>
+              <li><span class="n">1</span><span><strong>Stack &amp; level groups</strong> — courses are segregated by tool (<strong>Selenium</strong> / <strong>Playwright</strong>), then by <span class="badge beg">Beginner</span> <span class="badge int">Intermediate</span> <span class="badge adv">Advanced</span>, so learners pick a stack and start at the right level.</span></li>
               <li><span class="n">2</span><span><strong>Course card</strong> — title, description, level, lesson count and total minutes. Clicking opens the course (no login needed to browse).</span></li>
             </ol>
           </figcaption>
@@ -396,7 +452,7 @@ flowchart TD
       <!-- PRACTICE FLOW -->
       <section>
         <h2>🧩 Practice Modules Flow</h2>
-        <p>The practice sandbox groups 28 modules into categories. Every interactive element exposes a stable <code>data-testid</code> and proper ARIA roles.</p>
+        <p>The practice sandbox groups 40 modules into categories. Every interactive element exposes a stable <code>data-testid</code> and proper ARIA roles.</p>
 
         <h3>Category catalogue</h3>
         <figure class="shot">
