@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   FlaskConical,
   Search,
@@ -12,6 +13,14 @@ import {
   ShieldCheck,
   Keyboard,
   LayoutGrid,
+  Menu,
+  X,
+  Home,
+  GraduationCap,
+  Boxes,
+  Puzzle,
+  Workflow,
+  Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -30,13 +39,33 @@ import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppDispatch } from '@/store/hooks';
 import { toggleLauncher } from '@/store/uiSlice';
+import { cn } from '@/lib/utils';
+
+function MobileLink({ to, label, icon: Icon, onNavigate }: { to: string; label: string; icon: typeof Home; onNavigate: () => void }) {
+  return (
+    <NavLink
+      to={to}
+      onClick={onNavigate}
+      className={({ isActive }) =>
+        cn(
+          'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium',
+          isActive ? 'bg-primary/10 text-primary' : 'text-foreground/80 hover:bg-accent',
+        )
+      }
+    >
+      <Icon className="h-4 w-4" aria-hidden="true" /> {label}
+    </NavLink>
+  );
+}
 
 /**
  * Modern top chrome — three floating glass capsules: brand, a prominent
- * "spotlight" search, and quick actions. Primary navigation lives in the dock.
+ * "spotlight" search, and quick actions. Primary navigation lives in the dock,
+ * with a hamburger drawer on mobile (mirroring the classic UI).
  */
 export function SpotlightHeader() {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const { theme, toggleTheme } = useTheme();
   const { user, isAuthenticated, signOut } = useAuth();
@@ -45,6 +74,9 @@ export function SpotlightHeader() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => setMobileOpen(false), [location.pathname]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -73,8 +105,20 @@ export function SpotlightHeader() {
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-5 sm:pt-4">
       <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
+        {/* Mobile menu (hamburger) — mirrors the classic UI */}
+        <button
+          type="button"
+          onClick={() => setMobileOpen((v) => !v)}
+          aria-label="Toggle navigation"
+          aria-expanded={mobileOpen}
+          data-testid="mobile-menu-button"
+          className={`${capsule} h-12 w-12 shrink-0 items-center justify-center lg:hidden`}
+        >
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+
         {/* Brand */}
-        <Link to="/" data-testid="sidebar-logo" className={`${capsule} gap-2 px-2.5 font-semibold`}>
+        <Link to="/" data-testid="sidebar-logo" className={`${capsule} shrink-0 gap-2 px-2.5 font-semibold`}>
           <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white">
             <FlaskConical className="h-5 w-5" aria-hidden="true" />
           </span>
@@ -86,19 +130,17 @@ export function SpotlightHeader() {
           type="button"
           onClick={() => setPaletteOpen(true)}
           data-testid="open-search"
-          className={`${capsule} mx-auto w-full max-w-xl gap-3 px-4 text-sm text-muted-foreground transition-colors hover:text-foreground`}
+          className={`${capsule} min-w-0 flex-1 gap-3 px-3 text-sm text-muted-foreground transition-colors hover:text-foreground sm:mx-auto sm:w-full sm:max-w-xl sm:px-4`}
         >
-          <Search className="h-4 w-4" aria-hidden="true" />
-          <span className="truncate">Search or jump to anything…</span>
+          <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span className="hidden truncate sm:inline">Search or jump to anything…</span>
+          <span className="truncate sm:hidden">Search…</span>
           <kbd className="ml-auto hidden rounded border bg-background/60 px-1.5 text-[10px] font-medium sm:inline">/</kbd>
         </button>
 
         {/* Actions */}
-        <div className={`${capsule} gap-0.5 px-1.5`}>
-          <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => dispatch(toggleLauncher())} data-testid="open-launcher" aria-label="App launcher" title="All apps">
-            <LayoutGrid className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="hidden rounded-xl sm:inline-flex" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} data-testid="theme-toggle">
+        <div className={`${capsule} shrink-0 gap-0.5 px-1.5`}>
+          <Button variant="ghost" size="icon" className="rounded-xl" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} data-testid="theme-toggle">
             {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
           <Button variant="ghost" size="icon" className="hidden rounded-xl sm:inline-flex" onClick={() => setShortcutsOpen(true)} aria-label="Keyboard shortcuts and progress" data-testid="open-shortcuts" title="Shortcuts & progress (?)">
@@ -154,6 +196,79 @@ export function SpotlightHeader() {
           )}
         </div>
       </div>
+
+      {/* Mobile drawer — same hamburger menu as the classic UI */}
+      <AnimatePresence>
+        {mobileOpen ? (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18 }}
+            className="pointer-events-auto mx-auto mt-2 max-h-[80vh] max-w-7xl overflow-y-auto rounded-2xl border border-border/60 bg-card/95 p-2 shadow-apple-lg backdrop-blur-xl lg:hidden"
+            data-testid="mobile-drawer"
+          >
+            <button
+              type="button"
+              onClick={() => { setMobileOpen(false); dispatch(toggleLauncher()); }}
+              className="mb-1 flex w-full items-center gap-2 rounded-xl bg-primary/10 px-3 py-2.5 text-sm font-semibold text-primary"
+            >
+              <LayoutGrid className="h-4 w-4" /> Open app launcher
+            </button>
+            <MobileLink to="/" label="Home" icon={Home} onNavigate={() => setMobileOpen(false)} />
+            <MobileLink to="/learning" label="Learn" icon={GraduationCap} onNavigate={() => setMobileOpen(false)} />
+            <MobileLink to="/modules" label="Practice" icon={Boxes} onNavigate={() => setMobileOpen(false)} />
+            <MobileLink to="/challenges" label="Challenges" icon={Puzzle} onNavigate={() => setMobileOpen(false)} />
+            <MobileLink to="/workflows" label="Workflows" icon={Workflow} onNavigate={() => setMobileOpen(false)} />
+            <MobileLink to="/explore" label="Explore" icon={Sparkles} onNavigate={() => setMobileOpen(false)} />
+            {isAdmin ? <MobileLink to="/admin" label="Admin" icon={ShieldCheck} onNavigate={() => setMobileOpen(false)} /> : null}
+
+            <div className="flex items-center justify-between rounded-xl px-3 py-2">
+              <span className="text-sm font-medium text-foreground">Interface</span>
+              <UiModeToggle />
+            </div>
+
+            <div className="my-1 h-px bg-border" aria-hidden="true" />
+
+            <button
+              type="button"
+              onClick={() => { setMobileOpen(false); setShortcutsOpen(true); }}
+              className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-accent"
+              data-testid="mobile-open-shortcuts"
+            >
+              <Keyboard className="h-4 w-4" aria-hidden="true" /> Shortcuts &amp; progress
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMobileOpen(false); setFeedbackOpen(true); }}
+              className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-accent"
+              data-testid="mobile-open-feedback"
+            >
+              <MessageSquarePlus className="h-4 w-4" aria-hidden="true" /> Feedback
+            </button>
+
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={() => { setMobileOpen(false); handleSignOut(); }}
+                className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-accent"
+                data-testid="mobile-logout"
+              >
+                <LogOut className="h-4 w-4" aria-hidden="true" /> Sign out
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setMobileOpen(false)}
+                className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3 py-2.5 text-sm font-semibold text-white"
+                data-testid="mobile-login"
+              >
+                <UserIcon className="h-4 w-4" aria-hidden="true" /> Sign in
+              </Link>
+            )}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />

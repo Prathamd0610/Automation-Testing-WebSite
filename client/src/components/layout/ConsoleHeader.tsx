@@ -118,14 +118,14 @@ export function ConsoleHeader() {
         type="button"
         onClick={() => setPaletteOpen(true)}
         data-testid="open-search"
-        className="flex h-9 flex-1 items-center gap-2 rounded-xl border bg-muted/40 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted sm:max-w-md"
+        className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-xl border bg-muted/40 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted sm:max-w-md"
       >
-        <Search className="h-4 w-4" aria-hidden="true" />
+        <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
         <span className="truncate">Search modules, courses &amp; challenges</span>
         <kbd className="ml-auto hidden rounded border bg-background px-1.5 text-[10px] font-medium sm:inline">/</kbd>
       </button>
 
-      <div className="ml-auto flex items-center gap-0.5">
+      <div className="ml-auto flex shrink-0 items-center gap-0.5">
         <Button variant="ghost" size="icon" className="rounded-lg" onClick={() => dispatch(toggleLauncher())} data-testid="open-launcher" aria-label="App launcher" title="All apps">
           <LayoutGrid className="h-5 w-5" />
         </Button>
@@ -207,6 +207,45 @@ export function ConsoleHeader() {
               <span className="text-sm font-medium text-foreground">Interface</span>
               <UiModeToggle />
             </div>
+
+            <div className="my-1 h-px bg-border" aria-hidden="true" />
+
+            <button
+              type="button"
+              onClick={() => { setMobileOpen(false); setShortcutsOpen(true); }}
+              className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-accent"
+              data-testid="mobile-open-shortcuts"
+            >
+              <Keyboard className="h-4 w-4" aria-hidden="true" /> Shortcuts &amp; progress
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMobileOpen(false); setFeedbackOpen(true); }}
+              className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-accent"
+              data-testid="mobile-open-feedback"
+            >
+              <MessageSquarePlus className="h-4 w-4" aria-hidden="true" /> Feedback
+            </button>
+
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={() => { setMobileOpen(false); handleSignOut(); }}
+                className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-accent"
+                data-testid="mobile-logout"
+              >
+                <LogOut className="h-4 w-4" aria-hidden="true" /> Sign out
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setMobileOpen(false)}
+                className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3 py-2.5 text-sm font-semibold text-white"
+                data-testid="mobile-login"
+              >
+                <UserIcon className="h-4 w-4" aria-hidden="true" /> Sign in
+              </Link>
+            )}
           </motion.div>
         ) : null}
       </AnimatePresence>
